@@ -8,9 +8,10 @@ import { useEffect, useState } from "react";
 interface GameHeaderProps {
   onBack?: () => void;
   showBackButton?: boolean;
+  onProfileClick?: () => void;
 }
 
-export function GameHeader({ onBack, showBackButton = true }: GameHeaderProps) {
+export function GameHeader({ onBack, showBackButton = true, onProfileClick }: GameHeaderProps) {
   const { user, coins, medals, coinsToAnimate, setCoinsToAnimate } = useGameStore();
   const [animatingCoins, setAnimatingCoins] = useState<number[]>([]);
 
@@ -93,18 +94,25 @@ export function GameHeader({ onBack, showBackButton = true }: GameHeaderProps) {
               </motion.div>
 
               <motion.div
-                className="flex items-center gap-3 bg-white/20 backdrop-blur-md rounded-full px-5 py-2"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <div className="w-10 h-10 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full flex items-center justify-center text-2xl shadow-lg">
-                  👤
-                </div>
-                <div className="text-white">
-                  <p className="font-bold text-lg uppercase tracking-wide">{user.name}</p>
-                  <p className="text-xs opacity-90 uppercase">Nivell 1</p>
-                </div>
+                <button
+                  onClick={onProfileClick}
+                  type="button"
+                  className="flex items-center gap-3 bg-white/20 backdrop-blur-md rounded-full px-5 py-2 hover:bg-white/30 transition-all cursor-pointer"
+                >
+                  <div className="w-10 h-10 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full flex items-center justify-center text-2xl shadow-lg">
+                    {user.avatar || '👤'}
+                  </div>
+                  <div className="text-white">
+                    <p className="font-bold text-lg uppercase tracking-wide">{user.name}</p>
+                    <p className="text-xs opacity-90 uppercase">Nivell 1</p>
+                  </div>
+                </button>
               </motion.div>
             </div>
 

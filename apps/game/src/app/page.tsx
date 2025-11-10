@@ -22,6 +22,45 @@ export default function Home() {
     requestPersistentStorage();
   }, []);
 
+  // Track session time
+  useEffect(() => {
+    if (!user) return;
+
+    // Start session timer when user is present
+    useGameStore.getState().startSession();
+
+    // End session on unmount or page unload
+    const handleBeforeUnload = () => {
+      useGameStore.getState().endSession();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      useGameStore.getState().endSession();
+    };
+  }, [user?.name]); // Only re-run if user changes (using name as stable reference)
+
+  // Track session on page visibility change
+  useEffect(() => {
+    if (!user) return;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        useGameStore.getState().endSession();
+      } else {
+        useGameStore.getState().startSession();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [user?.name]); // Only re-run if user changes
+
   if (showSplash) {
     return <SplashScreen onComplete={() => setShowSplash(false)} />;
   }

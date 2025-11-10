@@ -25,6 +25,7 @@ import type { Exercise } from "@/lib/exercises/types";
 interface Props {
   setId: string;
   onBack: () => void;
+  onProfileClick?: () => void;
 }
 
 // Helper functions for localStorage
@@ -81,7 +82,7 @@ const deleteAnswersFromStorage = (exerciseId: string) => {
   }
 };
 
-export function ExerciseViewer({ setId, onBack }: Props) {
+export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
   const exerciseSet = matematiquesExerciseSets.find((s) => s.id === setId);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, number | string>>(new Map());
@@ -596,7 +597,7 @@ export function ExerciseViewer({ setId, onBack }: Props) {
   return (
     <>
       {/* Game Header */}
-      <GameHeader onBack={onBack} showBackButton={true} />
+      <GameHeader onBack={onBack} showBackButton={true} onProfileClick={onProfileClick} />
 
       {/* Medal Animation */}
       <MedalAnimation

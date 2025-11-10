@@ -6,15 +6,27 @@ import Image from "next/image";
 import { Button, Card } from "@joscola/ui";
 import { useGameStore } from "@/lib/store";
 
+const AVATAR_OPTIONS = [
+  "👤", "😀", "😊", "🙂", "😎", "🤓", "🥳", "🤩",
+  "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼",
+  "🦁", "🐯", "🐸", "🐵", "🐔", "🐧", "🦉", "🦄",
+  "🚀", "⭐", "🌟", "✨", "🎨", "🎭", "🎪", "🎯"
+];
+
 export function Onboarding() {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState("👤");
   const setUser = useGameStore((state) => state.setUser);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim() && age) {
-      setUser({ name: name.trim(), age: parseInt(age) });
+      setUser({
+        name: name.trim(),
+        age: parseInt(age),
+        avatar: selectedAvatar
+      });
     }
   };
 
@@ -61,6 +73,40 @@ export function Onboarding() {
           </motion.div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Avatar Selection */}
+            <div>
+              <label className="block text-xl font-bold text-gray-800 mb-3 uppercase text-center">
+                TRIA EL TEU AVATAR
+              </label>
+              <div className="flex justify-center mb-4">
+                <motion.div
+                  className="w-24 h-24 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full flex items-center justify-center text-5xl shadow-lg"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {selectedAvatar}
+                </motion.div>
+              </div>
+              <div className="grid grid-cols-8 gap-2 p-4 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl">
+                {AVATAR_OPTIONS.map((avatar) => (
+                  <motion.button
+                    key={avatar}
+                    type="button"
+                    onClick={() => setSelectedAvatar(avatar)}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center text-2xl transition-all ${
+                      selectedAvatar === avatar
+                        ? "bg-blue-500 shadow-lg scale-110"
+                        : "bg-white hover:bg-blue-100 shadow"
+                    }`}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {avatar}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+
             <div>
               <label
                 htmlFor="name"

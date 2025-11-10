@@ -7,10 +7,12 @@ import { useGameStore } from "@/lib/store";
 import { useState } from "react";
 import { ExerciseViewer } from "./ExerciseViewer";
 import { GameHeader } from "./GameHeader";
+import { ProfilePage } from "./ProfilePage";
 
 export function ExerciseSetGrid() {
   const { user, progress } = useGameStore();
   const [selectedSet, setSelectedSet] = useState<string | null>(null);
+  const [showProfile, setShowProfile] = useState(false);
 
   const isSetComplete = (setId: string) => {
     const set = matematiquesExerciseSets.find((s) => s.id === setId);
@@ -21,8 +23,18 @@ export function ExerciseSetGrid() {
     );
   };
 
+  if (showProfile) {
+    return <ProfilePage onBack={() => setShowProfile(false)} />;
+  }
+
   if (selectedSet) {
-    return <ExerciseViewer setId={selectedSet} onBack={() => setSelectedSet(null)} />;
+    return (
+      <ExerciseViewer
+        setId={selectedSet}
+        onBack={() => setSelectedSet(null)}
+        onProfileClick={() => setShowProfile(true)}
+      />
+    );
   }
 
   return (
@@ -30,6 +42,7 @@ export function ExerciseSetGrid() {
       <GameHeader
         showBackButton={true}
         onBack={() => useGameStore.getState().setSubject(null)}
+        onProfileClick={() => setShowProfile(true)}
       />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pt-32 pb-8 px-8">
         <div className="max-w-7xl mx-auto">

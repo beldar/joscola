@@ -4,6 +4,10 @@ import { persist } from 'zustand/middleware';
 export interface User {
   name: string;
   age: number;
+  avatar?: string; // emoji avatar
+  totalTimeSpent?: number; // in seconds
+  createdAt?: Date;
+  lastActiveAt?: Date;
 }
 
 export interface ExerciseProgress {
@@ -28,9 +32,11 @@ interface GameStore {
   coins: number;
   medals: Medal[];
   coinsToAnimate: number;
+  sessionStartTime: number | null;
 
   // Actions
   setUser: (user: User) => void;
+  updateUser: (updates: Partial<User>) => void;
   setSubject: (subject: string | null) => void;
   markExerciseComplete: (exerciseSetId: string, exerciseId: string) => void;
   getExerciseProgress: (exerciseSetId: string, exerciseId: string) => ExerciseProgress | undefined;
@@ -39,6 +45,10 @@ interface GameStore {
   awardMedal: (setId: string, setTitle: string) => void;
   getMedalsForSet: (setId: string) => Medal[];
   setCoinsToAnimate: (amount: number) => void;
+  startSession: () => void;
+  endSession: () => void;
+  clearAllData: () => void;
+  getTotalExercisesCompleted: () => number;
 }
 
 export const useGameStore = create<GameStore>()(
@@ -50,8 +60,29 @@ export const useGameStore = create<GameStore>()(
       coins: 0,
       medals: [],
       coinsToAnimate: 0,
+      sessionStartTime: null,
 
-      setUser: (user) => set({ user }),
+      setUser: (user) => set({
+        user: {
+          ...user,
+          avatar: user.avatar || '👤',
+          totalTimeSpent: user.totalTimeSpent || 0,
+          createdAt: user.createdAt || new Date(),
+          lastActiveAt: new Date(),
+        }
+      }),
+
+      updateUser: (updates) => {
+        const { user } = get();
+        if (!user) return;
+        set({
+          user: {
+            ...user,
+            ...updates,
+            lastActiveAt: new Date(),
+          }
+        });
+      },
 
       setSubject: (subject) => set({ currentSubject: subject }),
 
@@ -142,6 +173,41 @@ export const useGameStore = create<GameStore>()(
 
       getMedalsForSet: (setId) => {
         return get().medals.filter(m => m.setId === setId);
+      },
+
+      startSession: () => {
+        set({ sessionStartTime: Date.now() });
+      },
+
+      endSession: () => {
+        const { sessionStartTime, user } = get();
+        if (sessionStartTime && user) {
+          const sessionDuration = Math.floor((Date.now() - sessionStartTime) / 1000);
+          set({
+            user: {
+              ...user,
+              totalTimeSpent: (user.totalTimeSpent || 0) + sessionDuration,
+              lastActiveAt: new Date(),
+            },
+            sessionStartTime: null,
+          });
+        }
+      },
+
+      clearAllData: () => {
+        set({
+          user: null,
+          currentSubject: null,
+          progress: [],
+          coins: 0,
+          medals: [],
+          coinsToAnimate: 0,
+          sessionStartTime: null,
+        });
+      },
+
+      getTotalExercisesCompleted: () => {
+        return get().progress.filter(p => p.completed).length;
       },
     }),
     {

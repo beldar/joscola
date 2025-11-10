@@ -605,7 +605,7 @@ export function ExerciseViewer({ setId, onBack }: Props) {
         onComplete={() => setShowMedal(false)}
       />
 
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pt-24 pb-8 px-8">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pt-32 pb-8 px-8">
         <div className="max-w-5xl mx-auto">
           {/* Exercise Info */}
           <motion.div

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { useGameStore } from "@/lib/store";
 import { useEffect, useState } from "react";
 
@@ -74,21 +75,38 @@ export function GameHeader({ onBack, showBackButton = true }: GameHeaderProps) {
               )}
             </div>
 
-            {/* Center Section - User Info */}
-            <motion.div
-              className="flex items-center gap-3 bg-white/20 backdrop-blur-md rounded-full px-5 py-2"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            >
-              <div className="w-10 h-10 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full flex items-center justify-center text-2xl shadow-lg">
-                👤
-              </div>
-              <div className="text-white">
-                <p className="font-bold text-lg uppercase tracking-wide">{user.name}</p>
-                <p className="text-xs opacity-90 uppercase">Nivell 1</p>
-              </div>
-            </motion.div>
+            {/* Center Section - Logo and User Info */}
+            <div className="flex items-center gap-4">
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+                className="hidden md:block"
+              >
+                <Image
+                  src="/joscola-icon.png"
+                  alt="Joscola"
+                  width={40}
+                  height={40}
+                  className="rounded-lg shadow-lg"
+                />
+              </motion.div>
+
+              <motion.div
+                className="flex items-center gap-3 bg-white/20 backdrop-blur-md rounded-full px-5 py-2"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              >
+                <div className="w-10 h-10 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full flex items-center justify-center text-2xl shadow-lg">
+                  👤
+                </div>
+                <div className="text-white">
+                  <p className="font-bold text-lg uppercase tracking-wide">{user.name}</p>
+                  <p className="text-xs opacity-90 uppercase">Nivell 1</p>
+                </div>
+              </motion.div>
+            </div>
 
             {/* Right Section - Stats */}
             <div className="flex-1 flex justify-end gap-4">

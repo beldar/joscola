@@ -5,12 +5,14 @@ import { SubjectSelector } from "@/components/SubjectSelector";
 import { ExerciseSetGrid } from "@/components/ExerciseSetGrid";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { UpdateNotification } from "@/components/UpdateNotification";
+import { SplashScreen } from "@/components/SplashScreen";
 import { useGameStore } from "@/lib/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { registerServiceWorker, requestPersistentStorage } from "@/lib/pwa-utils";
 
 export default function Home() {
   const { user, currentSubject } = useGameStore();
+  const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
     // Register service worker
@@ -19,6 +21,10 @@ export default function Home() {
     // Request persistent storage for better offline support
     requestPersistentStorage();
   }, []);
+
+  if (showSplash) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
 
   return (
     <>

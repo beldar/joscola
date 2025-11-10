@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Button, Card } from "@joscola/ui";
 import { useGameStore } from "@/lib/store";
 
@@ -31,8 +32,28 @@ export function Onboarding() {
             animate={{ y: 0 }}
             className="text-center mb-8"
           >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+                delay: 0.1
+              }}
+              className="mb-4"
+            >
+              <Image
+                src="/joscola-icon.png"
+                alt="Joscola Logo"
+                width={120}
+                height={120}
+                className="mx-auto rounded-3xl shadow-lg"
+                priority
+              />
+            </motion.div>
             <h1 className="text-6xl font-bold text-blue-600 mb-4">
-              🎓 JOSCOLA
+              JOSCOLA
             </h1>
             <p className="text-2xl text-gray-700">
               APRENEM JUGANT!

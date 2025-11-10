@@ -27,8 +27,11 @@ export function ExerciseSetGrid() {
 
   return (
     <>
-      <GameHeader showBackButton={false} />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pt-20 pb-8 px-8">
+      <GameHeader
+        showBackButton={true}
+        onBack={() => useGameStore.getState().setSubject(null)}
+      />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pt-32 pb-8 px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -80,15 +83,6 @@ export function ExerciseSetGrid() {
             );
           })}
         </div>
-
-          <div className="mt-8 text-center">
-            <button
-              onClick={() => useGameStore.getState().setSubject(null)}
-              className="text-xl text-blue-600 hover:text-blue-700 font-bold uppercase"
-            >
-              ← TORNAR A ASSIGNATURES
-            </button>
-          </div>
         </div>
       </div>
     </>

@@ -6,9 +6,11 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "type-check": "turbo type-check",
-    "clean": "turbo clean"
+    "clean": "turbo clean",
+    "prepare": "husky install"
   },
   "devDependencies": {
+    "husky": "^8.0.3",
     "turbo": "^2.3.3"
   },
   "packageManager": "pnpm@9.15.0",

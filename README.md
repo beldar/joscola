@@ -9,6 +9,8 @@ Consulta la [documentació completa](./docs/README.md) per a informació detalla
 - **[Arquitectura](./docs/ARCHITECTURE.md)**: Estructura del projecte, stack tecnològic i components principals
 - **[Exercicis](./docs/EXERCISES.md)**: Sistema d'exercicis, tots els tipus implementats i com afegir-ne de nous
 - **[Persistència](./docs/STORAGE.md)**: Sistema de localStorage, gestió de dades i debugging
+- **[Desenvolupament](./DEVELOPMENT.md)**: Guia completa de desenvolupament i service worker
+- **[Cache Automation](./CACHE-AUTOMATION.md)**: Sistema automàtic d'actualització de cache
 
 ## 🚀 Tech Stack
 
@@ -109,7 +111,7 @@ joscola/
 ### Instal·lació
 
 ```bash
-# Instal·lar dependències
+# Instal·lar dependències (inclou Husky per git hooks)
 pnpm install
 
 # Iniciar servidor de desenvolupament
@@ -126,6 +128,8 @@ pnpm type-check
 ```
 
 L'aplicació estarà disponible a [http://localhost:3000](http://localhost:3000)
+
+> **📦 Cache Auto-Bumping**: El projecte inclou automatització per incrementar automàticament la versió del service worker cache en cada commit. Veure [CACHE-AUTOMATION.md](./CACHE-AUTOMATION.md) per més detalls.
 
 ## 🎯 Flux de l'Usuari
 

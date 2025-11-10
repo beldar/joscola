@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.0.0
+// Version 1.1.0 - Added profile page with avatar selection
 
-const CACHE_NAME = 'joscola-v1.0.0';
-const RUNTIME_CACHE = 'joscola-runtime-v1';
+const CACHE_NAME = 'joscola-v1.1.0';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.0';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Auto-increment service worker cache version
+node scripts/bump-sw-version.js
+
+# Stage the updated service worker file
+git add apps/game/public/service-worker.js

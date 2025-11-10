@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Icon Generator for Joscola</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: #f0f9ff;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            margin: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PWA Icons for Joscola</h1>
+    <p>Right-click and save each icon with the specified filename</p>
+    <div class="container" id="icons"></div>
+
+    <script>
+        const sizes = [16, 32, 72, 96, 128, 144, 152, 192, 384, 512];
+        const container = document.getElementById('icons');
+
+        sizes.forEach(size => {
+            const wrapper = document.createElement('div');
+            wrapper.style.textAlign = 'center';
+
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // Gradient background
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#3b82f6');
+            gradient.addColorStop(0.5, '#8b5cf6');
+            gradient.addColorStop(1, '#ec4899');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+
+            // White circle background
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size*0.35, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw "J" letter
+            ctx.fillStyle = '#3b82f6';
+            ctx.font = `bold ${size * 0.5}px Inter, Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('J', size/2, size/2);
+
+            // Add emoji decorations for larger sizes
+            if (size >= 128) {
+                ctx.font = `${size * 0.15}px Arial`;
+                // Top left - pencil
+                ctx.fillText('✏️', size * 0.2, size * 0.2);
+                // Top right - book
+                ctx.fillText('📚', size * 0.8, size * 0.2);
+                // Bottom left - star
+                ctx.fillText('⭐', size * 0.2, size * 0.8);
+                // Bottom right - trophy
+                ctx.fillText('🏆', size * 0.8, size * 0.8);
+            }
+
+            const label = document.createElement('p');
+            label.textContent = `icon-${size}x${size}.png`;
+            label.style.margin = '5px 0';
+
+            wrapper.appendChild(canvas);
+            wrapper.appendChild(label);
+            container.appendChild(wrapper);
+
+            // Convert to downloadable link
+            canvas.style.cursor = 'pointer';
+            canvas.onclick = () => {
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `icon-${size}x${size}.png`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+            };
+        });
+
+        // Generate screenshots placeholders
+        const screenshotSizes = [
+            { width: 1280, height: 720, name: 'screenshot-wide.png' },
+            { width: 720, height: 1280, name: 'screenshot-narrow.png' }
+        ];
+
+        screenshotSizes.forEach(({ width, height, name }) => {
+            const wrapper = document.createElement('div');
+            wrapper.style.textAlign = 'center';
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width / 4; // Scale down for display
+            canvas.height = height / 4;
+            canvas.style.width = width / 4 + 'px';
+            canvas.style.height = height / 4 + 'px';
+            const ctx = canvas.getContext('2d');
+
+            // Draw screenshot placeholder
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#dbeafe');
+            gradient.addColorStop(0.5, '#e9d5ff');
+            gradient.addColorStop(1, '#fce7f3');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Add text
+            ctx.fillStyle = '#1f2937';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Joscola', canvas.width/2, canvas.height/2 - 20);
+
+            ctx.font = '16px Arial';
+            ctx.fillText('Educational Games', canvas.width/2, canvas.height/2 + 10);
+
+            const label = document.createElement('p');
+            label.textContent = name;
+            label.style.margin = '5px 0';
+
+            wrapper.appendChild(canvas);
+            wrapper.appendChild(label);
+            container.appendChild(wrapper);
+
+            canvas.style.cursor = 'pointer';
+            canvas.onclick = () => {
+                // Create full size canvas for download
+                const fullCanvas = document.createElement('canvas');
+                fullCanvas.width = width;
+                fullCanvas.height = height;
+                const fullCtx = fullCanvas.getContext('2d');
+
+                // Draw full size version
+                const fullGradient = fullCtx.createLinearGradient(0, 0, width, height);
+                fullGradient.addColorStop(0, '#dbeafe');
+                fullGradient.addColorStop(0.5, '#e9d5ff');
+                fullGradient.addColorStop(1, '#fce7f3');
+                fullCtx.fillStyle = fullGradient;
+                fullCtx.fillRect(0, 0, width, height);
+
+                fullCtx.fillStyle = '#1f2937';
+                fullCtx.font = `bold ${width/10}px Arial`;
+                fullCtx.textAlign = 'center';
+                fullCtx.textBaseline = 'middle';
+                fullCtx.fillText('Joscola', width/2, height/2 - 50);
+
+                fullCtx.font = `${width/20}px Arial`;
+                fullCtx.fillText('Educational Games for Kids', width/2, height/2 + 30);
+
+                fullCanvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = name;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+            };
+        });
+    </script>
+</body>
+</html>

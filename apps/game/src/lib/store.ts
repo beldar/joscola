@@ -1,0 +1,151 @@
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+export interface User {
+  name: string;
+  age: number;
+}
+
+export interface ExerciseProgress {
+  exerciseSetId: string;
+  exerciseId: string;
+  completed: boolean;
+  attempts: number;
+  lastAttempt: Date;
+}
+
+export interface Medal {
+  setId: string;
+  setTitle: string;
+  awardedAt: Date;
+  type: 'gold' | 'silver' | 'bronze';
+}
+
+interface GameStore {
+  user: User | null;
+  currentSubject: string | null;
+  progress: ExerciseProgress[];
+  coins: number;
+  medals: Medal[];
+  coinsToAnimate: number;
+
+  // Actions
+  setUser: (user: User) => void;
+  setSubject: (subject: string | null) => void;
+  markExerciseComplete: (exerciseSetId: string, exerciseId: string) => void;
+  getExerciseProgress: (exerciseSetId: string, exerciseId: string) => ExerciseProgress | undefined;
+  isExerciseSetComplete: (exerciseSetId: string) => boolean;
+  addCoins: (amount: number) => void;
+  awardMedal: (setId: string, setTitle: string) => void;
+  getMedalsForSet: (setId: string) => Medal[];
+  setCoinsToAnimate: (amount: number) => void;
+}
+
+export const useGameStore = create<GameStore>()(
+  persist(
+    (set, get) => ({
+      user: null,
+      currentSubject: null,
+      progress: [],
+      coins: 0,
+      medals: [],
+      coinsToAnimate: 0,
+
+      setUser: (user) => set({ user }),
+
+      setSubject: (subject) => set({ currentSubject: subject }),
+
+      markExerciseComplete: (exerciseSetId, exerciseId) => {
+        const { progress } = get();
+        const existing = progress.find(
+          (p) => p.exerciseSetId === exerciseSetId && p.exerciseId === exerciseId
+        );
+
+        if (existing) {
+          set({
+            progress: progress.map((p) =>
+              p.exerciseSetId === exerciseSetId && p.exerciseId === exerciseId
+                ? {
+                    ...p,
+                    completed: true,
+                    attempts: p.attempts + 1,
+                    lastAttempt: new Date(),
+                  }
+                : p
+            ),
+          });
+        } else {
+          set({
+            progress: [
+              ...progress,
+              {
+                exerciseSetId,
+                exerciseId,
+                completed: true,
+                attempts: 1,
+                lastAttempt: new Date(),
+              },
+            ],
+          });
+        }
+      },
+
+      getExerciseProgress: (exerciseSetId, exerciseId) => {
+        return get().progress.find(
+          (p) => p.exerciseSetId === exerciseSetId && p.exerciseId === exerciseId
+        );
+      },
+
+      isExerciseSetComplete: (exerciseSetId) => {
+        const { progress } = get();
+        // Import the actual exercise set data
+        const { matematiquesExerciseSets } = require('./exercises/matematiques');
+        const exerciseSet = matematiquesExerciseSets.find((set: any) => set.id === exerciseSetId);
+
+        if (!exerciseSet) return false;
+
+        // Check if all exercises in the set are completed
+        return exerciseSet.exercises.every((exercise: any) => {
+          return progress.some(p =>
+            p.exerciseSetId === exerciseSetId &&
+            p.exerciseId === exercise.id &&
+            p.completed
+          );
+        });
+      },
+
+      addCoins: (amount) => {
+        set((state) => ({
+          coins: state.coins + amount,
+          coinsToAnimate: amount
+        }));
+      },
+
+      setCoinsToAnimate: (amount) => {
+        set({ coinsToAnimate: amount });
+      },
+
+      awardMedal: (setId, setTitle) => {
+        const { medals } = get();
+        // Check if medal already exists for this set
+        if (medals.some(m => m.setId === setId)) return;
+
+        set({
+          medals: [...medals, {
+            setId,
+            setTitle,
+            awardedAt: new Date(),
+            type: 'gold'
+          }]
+        });
+      },
+
+      getMedalsForSet: (setId) => {
+        return get().medals.filter(m => m.setId === setId);
+      },
+    }),
+    {
+      name: 'joscola-storage',
+    }
+  )
+);

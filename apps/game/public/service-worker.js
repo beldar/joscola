@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.1.5 - fix: types
+// Version 1.1.6 - feat: velocitat lectora catala
 
-const CACHE_NAME = 'joscola-v1.1.5';
-const RUNTIME_CACHE = 'joscola-runtime-v1.1.5';
+const CACHE_NAME = 'joscola-v1.1.6';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.6';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { ReadingSpeedExercise as ReadingSpeedType } from "@/lib/exercises/types";
 
 interface Props {
@@ -60,6 +60,14 @@ export function ReadingSpeedExercise({ exercise, onAnswer, answers }: Props) {
     return columns;
   };
 
+  const handleComplete = useCallback((wordCount?: number) => {
+    // Store the final word count
+    finalWordsCountRef.current = wordCount || wordsRead;
+    setIsRunning(false);
+    setHasCompleted(true);
+    // Answers will be submitted via useEffect to avoid render-time state updates
+  }, [wordsRead]);
+
   useEffect(() => {
     if (isRunning && timeRemaining > 0) {
       intervalRef.current = setInterval(() => {
@@ -86,20 +94,12 @@ export function ReadingSpeedExercise({ exercise, onAnswer, answers }: Props) {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, timeRemaining, wordsRead]);
+  }, [isRunning, timeRemaining, wordsRead, handleComplete]);
 
   const handleStart = () => {
     setIsRunning(true);
     setHasStarted(true);
     setTimeRemaining(exercise.timeLimit);
-  };
-
-  const handleComplete = (wordCount?: number) => {
-    // Store the final word count
-    finalWordsCountRef.current = wordCount || wordsRead;
-    setIsRunning(false);
-    setHasCompleted(true);
-    // Answers will be submitted via useEffect to avoid render-time state updates
   };
 
   const handleWordClick = (columnIndex: number, wordIndex: number) => {
@@ -268,7 +268,7 @@ export function ReadingSpeedExercise({ exercise, onAnswer, answers }: Props) {
             <li>• Llegeix les paraules per columnes, de dalt a baix</li>
             <li>• No et saltis cap paraula</li>
             <li>• Si una paraula et resulta difícil, intenta-ho fins aconseguir-la</li>
-            <li>• L'objectiu és llegir les 60 paraules en 2 minuts</li>
+            <li>• L&apos;objectiu és llegir les 60 paraules en 2 minuts</li>
             <li>• Fes clic a cada paraula quan la llegeixis</li>
           </ul>
         </div>

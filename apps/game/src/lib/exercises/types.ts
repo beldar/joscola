@@ -97,6 +97,13 @@ export interface TrainPositionExercise extends BaseExercise {
   trainLength: number;
   signPositions: number[]; // positions where signs should be placed
   missingPositions: number[]; // which signs are missing
+  mode?: "fill-signs" | "place-signs" | "tunnel-fill";
+  availableSigns?: number[]; // numbers available for placement (place mode)
+  tunnels?: Array<{
+    start: number; // 1-based start position covered by the tunnel
+    length: number; // how many wagons/balls are hidden
+    variant?: "stone" | "moss" | "wood";
+  }>;
 }
 
 export interface NumberPatternExercise extends BaseExercise {

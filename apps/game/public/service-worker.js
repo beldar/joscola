@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.1.4 - fix: train counting exercises
+// Version 1.1.5 - fix: types
 
-const CACHE_NAME = 'joscola-v1.1.4';
-const RUNTIME_CACHE = 'joscola-runtime-v1.1.4';
+const CACHE_NAME = 'joscola-v1.1.5';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.5';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

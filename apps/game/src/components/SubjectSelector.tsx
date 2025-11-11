@@ -16,7 +16,6 @@ const subjects = [
     name: "CATALÀ",
     icon: "📚",
     color: "from-green-400 to-green-600",
-    disabled: true,
   },
   {
     id: "castella",

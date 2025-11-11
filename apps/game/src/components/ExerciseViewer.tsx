@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@joscola/ui";
 import { matematiquesExerciseSets } from "@/lib/exercises/matematiques";
+import { catalaExerciseSets } from "@/lib/exercises/catala";
 import { useGameStore, EXERCISE_ANSWER_PREFIX, EXERCISE_CORRECTIONS_PREFIX } from "@/lib/store";
 import { GameHeader } from "./GameHeader";
 import { MedalAnimation } from "./MedalAnimation";
@@ -20,10 +21,12 @@ import { NumberPatternExercise } from "./exercises/NumberPatternExercise";
 import { MagicSquareExercise } from "./exercises/MagicSquareExercise";
 import { NumberLineExercise } from "./exercises/NumberLineExercise";
 import { EstimationExercise } from "./exercises/EstimationExercise";
+import { ReadingSpeedExercise } from "./exercises/ReadingSpeedExercise";
 import type { Exercise } from "@/lib/exercises/types";
 
 interface Props {
   setId: string;
+  subject?: string;
   onBack: () => void;
   onProfileClick?: () => void;
 }
@@ -79,8 +82,9 @@ const deleteAnswersFromStorage = (exerciseId: string) => {
   }
 };
 
-export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
-  const exerciseSet = matematiquesExerciseSets.find((s) => s.id === setId);
+export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProfileClick }: Props) {
+  const exerciseSets = subject === "catala" ? catalaExerciseSets : matematiquesExerciseSets;
+  const exerciseSet = exerciseSets.find((s) => s.id === setId);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, number | string>>(new Map());
   const [corrections, setCorrections] = useState<Map<string, boolean>>(new Map());
@@ -390,6 +394,17 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
         return totalCost === bestTotal;
       }
 
+      case "reading-speed": {
+        const wordsRead = answers.get("wordsRead");
+        // Success if all 60 words were read within time limit
+        console.log('Validating reading speed:', {
+          wordsRead,
+          totalWords: exercise.words.length,
+          isSuccess: wordsRead === exercise.words.length
+        });
+        return wordsRead === exercise.words.length;
+      }
+
       default:
         return false;
     }
@@ -507,6 +522,7 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
 
   const isCorrect = corrections.get(currentExercise.id) === true;
   const canCorrect = answers.size > 0;
+  const isReadingSpeed = currentExercise.type === "reading-speed";
 
   const renderExercise = () => {
     switch (currentExercise.type) {
@@ -615,6 +631,92 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
             exercise={currentExercise}
             answers={answers as Map<string, string>}
             onAnswer={setAnswers}
+          />
+        );
+
+      case "reading-speed":
+        return (
+          <ReadingSpeedExercise
+            exercise={currentExercise}
+            answers={answers as Map<string, number>}
+            onAnswer={(newAnswers) => {
+              console.log('ReadingSpeed onAnswer called with:', Array.from(newAnswers.entries()));
+              setAnswers(newAnswers);
+              // Auto-trigger correction when reading speed exercise is completed
+              if (newAnswers.get("autoComplete") === 1) {
+                console.log('Auto-completing with answers:', Array.from(newAnswers.entries()));
+                // Pass the new answers directly to validation since state might not be updated yet
+                const isCorrect = validateAnswer(currentExercise, newAnswers);
+                const newCorrections = new Map(corrections);
+                newCorrections.set(currentExercise.id, isCorrect);
+                setCorrections(newCorrections);
+
+                // Save to localStorage
+                saveAnswersToStorage(currentExercise.id, newAnswers);
+                saveCorrectionsToStorage(setId, newCorrections);
+
+                setShowCorrection(true);
+
+                if (isCorrect) {
+                  // Play success sound
+                  playSuccessSound();
+
+                  // Check if this is the first time completing this exercise
+                  const progress = getExerciseProgress(setId, currentExercise.id);
+                  const isFirstTimeCorrect = !progress || !progress.completed;
+
+                  markExerciseComplete(setId, currentExercise.id);
+
+                  // Award star only for first-time completion
+                  if (isFirstTimeCorrect) {
+                    setJustEarnedStar(true);
+                    // Delay star animation slightly to sync with success feedback
+                    setTimeout(() => {
+                      addStars(1);
+                      playStarSound();
+                    }, 500);
+                  }
+
+                  const isLastExercise = currentIndex === exerciseSet.exercises.length - 1;
+                  let shouldShowMedal = false;
+
+                  if (isLastExercise && isExerciseSetComplete(setId)) {
+                    const medals = getMedalsForSet(setId);
+                    if (medals.length === 0) {
+                      awardMedal(setId, exerciseSet.title);
+                      shouldShowMedal = true;
+                    }
+                  }
+
+                  // Auto-advance or celebrate after 2.5 seconds
+                  setTimeout(() => {
+                    setShowCorrection(false);
+                    setJustEarnedStar(false);
+
+                    if (isLastExercise) {
+                      if (shouldShowMedal) {
+                        setPendingSetNavigation(true);
+                        setShowMedal(true);
+                        playMedalSound();
+                      } else {
+                        onBack();
+                      }
+                    } else {
+                      setTimeout(() => {
+                        handleNext();
+                      }, 300);
+                    }
+                  }, 2500);
+                } else {
+                  // Play error sound
+                  playErrorSound();
+                  // Auto-dismiss feedback for incorrect answers after 2 seconds
+                  setTimeout(() => {
+                    setShowCorrection(false);
+                  }, 2000);
+                }
+              }
+            }}
           />
         );
 
@@ -745,7 +847,7 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
               >
                 TORNAR A INTENTAR 🔄
               </Button>
-            ) : (
+            ) : !isReadingSpeed ? (
               <Button
                 variant="primary"
                 size="lg"
@@ -755,7 +857,7 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
               >
                 CORREGIR ✓
               </Button>
-            )}
+            ) : null}
           </div>
 
           {/* Spacer to balance layout */}

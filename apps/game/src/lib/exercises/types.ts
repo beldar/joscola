@@ -11,7 +11,8 @@ export type ExerciseType =
   | "number-pattern"
   | "magic-square"
   | "number-line"
-  | "estimation";
+  | "estimation"
+  | "reading-speed";
 
 export interface BaseExercise {
   id: string;
@@ -122,6 +123,14 @@ export interface EstimationExercise extends BaseExercise {
   question: string;
 }
 
+export interface ReadingSpeedExercise extends BaseExercise {
+  type: "reading-speed";
+  phase: number; // 1-9
+  words: string[]; // 60 words to read
+  timeLimit: number; // in seconds (120 for 2 minutes)
+  columns: number; // number of columns to display words in
+}
+
 export type Exercise =
   | NumberSequenceExercise
   | CountingExercise
@@ -135,7 +144,8 @@ export type Exercise =
   | NumberPatternExercise
   | MagicSquareExercise
   | NumberLineExercise
-  | EstimationExercise;
+  | EstimationExercise
+  | ReadingSpeedExercise;
 
 export interface ExerciseSet {
   id: string;

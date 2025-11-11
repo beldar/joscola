@@ -3,19 +3,26 @@
 import { motion } from "framer-motion";
 import { Card } from "@joscola/ui";
 import { matematiquesExerciseSets } from "@/lib/exercises/matematiques";
+import { catalaExerciseSets } from "@/lib/exercises/catala";
 import { useGameStore } from "@/lib/store";
 import { useState } from "react";
 import { ExerciseViewer } from "./ExerciseViewer";
 import { GameHeader } from "./GameHeader";
 import { ProfilePage } from "./ProfilePage";
 
-export function ExerciseSetGrid() {
+interface Props {
+  subject?: string;
+}
+
+export function ExerciseSetGrid({ subject = "matematiques" }: Props) {
   const { user, progress } = useGameStore();
   const [selectedSet, setSelectedSet] = useState<string | null>(null);
   const [showProfile, setShowProfile] = useState(false);
 
+  const exerciseSets = subject === "catala" ? catalaExerciseSets : matematiquesExerciseSets;
+
   const isSetComplete = (setId: string) => {
-    const set = matematiquesExerciseSets.find((s) => s.id === setId);
+    const set = exerciseSets.find((s) => s.id === setId);
     if (!set) return false;
 
     return set.exercises.every((ex) =>
@@ -31,6 +38,7 @@ export function ExerciseSetGrid() {
     return (
       <ExerciseViewer
         setId={selectedSet}
+        subject={subject}
         onBack={() => setSelectedSet(null)}
         onProfileClick={() => setShowProfile(true)}
       />
@@ -52,7 +60,7 @@ export function ExerciseSetGrid() {
             className="text-center mb-12"
           >
             <h1 className="text-5xl font-bold text-gray-800 mb-4 uppercase">
-              MATEMÀTIQUES
+              {subject === "catala" ? "CATALÀ" : "MATEMÀTIQUES"}
             </h1>
             <p className="text-2xl text-gray-600 uppercase">
               ESCULL UN GRUP D&apos;EXERCICIS
@@ -60,7 +68,7 @@ export function ExerciseSetGrid() {
           </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {matematiquesExerciseSets.map((set, index) => {
+          {exerciseSets.map((set, index) => {
             const isComplete = isSetComplete(set.id);
             return (
               <motion.div

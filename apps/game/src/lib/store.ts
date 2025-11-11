@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export const EXERCISE_ANSWER_PREFIX = "exercise-answers-";
+export const EXERCISE_CORRECTIONS_PREFIX = "exercise-corrections-";
+export const STORE_PERSIST_KEY = "joscola-storage";
+
 export interface User {
   name: string;
   age: number;
@@ -204,6 +208,23 @@ export const useGameStore = create<GameStore>()(
           starsToAnimate: 0,
           sessionStartTime: null,
         });
+
+        if (typeof window !== 'undefined' && window.localStorage) {
+          const keysToRemove: string[] = [];
+          for (let i = 0; i < window.localStorage.length; i++) {
+            const key = window.localStorage.key(i);
+            if (!key) continue;
+            if (
+              key.startsWith(EXERCISE_ANSWER_PREFIX) ||
+              key.startsWith(EXERCISE_CORRECTIONS_PREFIX)
+            ) {
+              keysToRemove.push(key);
+            }
+          }
+
+          keysToRemove.forEach((key) => window.localStorage.removeItem(key));
+          window.localStorage.removeItem(STORE_PERSIST_KEY);
+        }
       },
 
       getTotalExercisesCompleted: () => {
@@ -211,7 +232,7 @@ export const useGameStore = create<GameStore>()(
       },
     }),
     {
-      name: 'joscola-storage',
+      name: STORE_PERSIST_KEY,
     }
   )
 );

@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.1.1 - fix: commit hook
+// Version 1.1.2 - fix: test commit hook
 
-const CACHE_NAME = 'joscola-v1.1.1';
-const RUNTIME_CACHE = 'joscola-runtime-v1.1.1';
+const CACHE_NAME = 'joscola-v1.1.2';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.2';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

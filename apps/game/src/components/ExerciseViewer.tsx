@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@joscola/ui";
 import { matematiquesExerciseSets } from "@/lib/exercises/matematiques";
-import { useGameStore } from "@/lib/store";
+import { useGameStore, EXERCISE_ANSWER_PREFIX, EXERCISE_CORRECTIONS_PREFIX } from "@/lib/store";
 import { GameHeader } from "./GameHeader";
 import { MedalAnimation } from "./MedalAnimation";
 import { playStarSound, playMedalSound, playSuccessSound, playErrorSound, initAudioContext } from "@/lib/sounds";
@@ -29,19 +29,16 @@ interface Props {
 }
 
 // Helper functions for localStorage
-const STORAGE_KEY_PREFIX = "exercise-answers-";
-const STORAGE_KEY_CORRECTIONS = "exercise-corrections-";
-
 const saveAnswersToStorage = (exerciseId: string, answers: Map<string, number | string>) => {
   if (typeof window !== "undefined") {
     const obj = Object.fromEntries(answers);
-    localStorage.setItem(STORAGE_KEY_PREFIX + exerciseId, JSON.stringify(obj));
+    localStorage.setItem(EXERCISE_ANSWER_PREFIX + exerciseId, JSON.stringify(obj));
   }
 };
 
 const loadAnswersFromStorage = (exerciseId: string): Map<string, number | string> => {
   if (typeof window !== "undefined") {
-    const stored = localStorage.getItem(STORAGE_KEY_PREFIX + exerciseId);
+    const stored = localStorage.getItem(EXERCISE_ANSWER_PREFIX + exerciseId);
     if (stored) {
       try {
         const obj = JSON.parse(stored);
@@ -57,13 +54,13 @@ const loadAnswersFromStorage = (exerciseId: string): Map<string, number | string
 const saveCorrectionsToStorage = (setId: string, corrections: Map<string, boolean>) => {
   if (typeof window !== "undefined") {
     const obj = Object.fromEntries(corrections);
-    localStorage.setItem(STORAGE_KEY_CORRECTIONS + setId, JSON.stringify(obj));
+    localStorage.setItem(EXERCISE_CORRECTIONS_PREFIX + setId, JSON.stringify(obj));
   }
 };
 
 const loadCorrectionsFromStorage = (setId: string): Map<string, boolean> => {
   if (typeof window !== "undefined") {
-    const stored = localStorage.getItem(STORAGE_KEY_CORRECTIONS + setId);
+    const stored = localStorage.getItem(EXERCISE_CORRECTIONS_PREFIX + setId);
     if (stored) {
       try {
         const obj = JSON.parse(stored);
@@ -78,7 +75,7 @@ const loadCorrectionsFromStorage = (setId: string): Map<string, boolean> => {
 
 const deleteAnswersFromStorage = (exerciseId: string) => {
   if (typeof window !== "undefined") {
-    localStorage.removeItem(STORAGE_KEY_PREFIX + exerciseId);
+    localStorage.removeItem(EXERCISE_ANSWER_PREFIX + exerciseId);
   }
 };
 

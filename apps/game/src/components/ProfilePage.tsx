@@ -22,7 +22,7 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
     user,
     updateUser,
     clearAllData,
-    coins,
+    stars,
     medals,
     getTotalExercisesCompleted,
   } = useGameStore();
@@ -250,10 +250,10 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
                 </div>
 
                 <div className="bg-white rounded-xl p-4 text-center shadow">
-                  <div className="text-4xl mb-2">🪙</div>
-                  <p className="text-sm text-gray-600 uppercase mb-1">Monedes</p>
+                  <div className="text-4xl mb-2">⭐</div>
+                  <p className="text-sm text-gray-600 uppercase mb-1">Estrelles</p>
                   <p className="text-3xl font-bold text-yellow-600">
-                    {coins}
+                    {stars}
                   </p>
                 </div>
 

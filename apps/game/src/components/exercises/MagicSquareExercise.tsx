@@ -11,8 +11,12 @@ interface Props {
 
 export function MagicSquareExercise({ exercise, onAnswer, answers }: Props) {
   // Get which row and column to validate (for visual highlighting)
-  const validateRow = (exercise as any).validateRow ?? 0;
-  const validateColumn = (exercise as any).validateColumn ?? 0;
+  const rawValidateRow = exercise.validateRow ?? 0;
+  const rawValidateColumn = exercise.validateColumn ?? 0;
+  const validateRow =
+    exercise.size === 3 && rawValidateRow === 1 ? 0 : rawValidateRow;
+  const validateColumn =
+    exercise.size === 3 && rawValidateColumn === 1 ? 0 : rawValidateColumn;
   const handleInputChange = (row: number, col: number, value: string) => {
     const newAnswers = new Map(answers);
     const key = `${row}-${col}`;

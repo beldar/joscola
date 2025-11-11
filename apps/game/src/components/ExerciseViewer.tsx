@@ -7,7 +7,7 @@ import { matematiquesExerciseSets } from "@/lib/exercises/matematiques";
 import { useGameStore } from "@/lib/store";
 import { GameHeader } from "./GameHeader";
 import { MedalAnimation } from "./MedalAnimation";
-import { playCoinSound, playMedalSound, playSuccessSound, playErrorSound, initAudioContext } from "@/lib/sounds";
+import { playStarSound, playMedalSound, playSuccessSound, playErrorSound, initAudioContext } from "@/lib/sounds";
 import { NumberSequenceExercise } from "./exercises/NumberSequenceExercise";
 import { AdditionThreeExercise } from "./exercises/AdditionThreeExercise";
 import { SubtractionJumpsExercise } from "./exercises/SubtractionJumpsExercise";
@@ -89,10 +89,11 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
   const [corrections, setCorrections] = useState<Map<string, boolean>>(new Map());
   const [showCorrection, setShowCorrection] = useState(false);
   const [showMedal, setShowMedal] = useState(false);
-  const [justEarnedCoin, setJustEarnedCoin] = useState(false);
+  const [justEarnedStar, setJustEarnedStar] = useState(false);
+  const [pendingSetNavigation, setPendingSetNavigation] = useState(false);
   const {
     markExerciseComplete,
-    addCoins,
+    addStars,
     awardMedal,
     isExerciseSetComplete,
     getMedalsForSet,
@@ -288,8 +289,12 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
         if (isCenterCloud) {
           // Check if exercise specifies which row/column to validate
           // Default to row 0 and column 0 if not specified
-          const rowToCheck = (exercise as any).validateRow ?? 0;
-          const colToCheck = (exercise as any).validateColumn ?? 0;
+          const rowToCheckRaw = exercise.validateRow ?? 0;
+          const colToCheckRaw = exercise.validateColumn ?? 0;
+          const rowToCheck =
+            isCenterCloud && rowToCheckRaw === 1 ? 0 : rowToCheckRaw;
+          const colToCheck =
+            isCenterCloud && colToCheckRaw === 1 ? 0 : colToCheckRaw;
 
           // Validate the specified row (sum all non-cloud cells)
           let rowSum = 0;
@@ -354,7 +359,6 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
         if (!itemsStr) return false;
 
         const selectedItems = itemsStr.split(",").filter((s) => s.length > 0);
-        if (selectedItems.length === 0) return false;
 
         // Calculate total cost
         const totalCost = selectedItems.reduce((sum, itemName) => {
@@ -362,8 +366,31 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
           return sum + (item?.price || 0);
         }, 0);
 
-        // Must be within budget
-        return totalCost <= exercise.money;
+        if (totalCost > exercise.money) return false;
+
+        // Find the maximum possible spend without exceeding the budget
+        const itemCount = exercise.items.length;
+        let bestTotal = 0;
+        for (let mask = 1; mask < 1 << itemCount; mask++) {
+          let sum = 0;
+          for (let i = 0; i < itemCount; i++) {
+            if (mask & (1 << i)) {
+              sum += exercise.items[i].price;
+              if (sum > exercise.money) break;
+            }
+          }
+          if (sum <= exercise.money && sum > bestTotal) {
+            bestTotal = sum;
+          }
+        }
+
+        if (bestTotal === 0) {
+          return selectedItems.length === 0;
+        }
+
+        if (selectedItems.length === 0) return false;
+
+        return totalCost === bestTotal;
       }
 
       default:
@@ -393,40 +420,45 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
 
       markExerciseComplete(setId, currentExercise.id);
 
-      // Award coin only for first-time completion
+      // Award star only for first-time completion
       if (isFirstTimeCorrect) {
-        setJustEarnedCoin(true);
-        // Delay coin animation slightly to sync with success feedback
+        setJustEarnedStar(true);
+        // Delay star animation slightly to sync with success feedback
         setTimeout(() => {
-          addCoins(1);
-          playCoinSound();
+          addStars(1);
+          playStarSound();
         }, 500);
       }
 
-      // Check if this completes the entire set
       const isLastExercise = currentIndex === exerciseSet.exercises.length - 1;
-      if (isLastExercise) {
-        // Check if all exercises are completed
-        setTimeout(() => {
-          if (isExerciseSetComplete(setId)) {
-            const medals = getMedalsForSet(setId);
-            if (medals.length === 0) {
-              // Award medal for first-time set completion
-              awardMedal(setId, exerciseSet.title);
-              setShowMedal(true);
-              playMedalSound();
-            }
-          }
-        }, 5000);
+      let shouldShowMedal = false;
+
+      if (isLastExercise && isExerciseSetComplete(setId)) {
+        const medals = getMedalsForSet(setId);
+        if (medals.length === 0) {
+          awardMedal(setId, exerciseSet.title);
+          shouldShowMedal = true;
+        }
       }
 
-      // Auto-advance to next exercise after 2.5 seconds
+      // Auto-advance or celebrate after 2.5 seconds
       setTimeout(() => {
         setShowCorrection(false);
-        setJustEarnedCoin(false);
-        setTimeout(() => {
-          handleNext();
-        }, 300);
+        setJustEarnedStar(false);
+
+        if (isLastExercise) {
+          if (shouldShowMedal) {
+            setPendingSetNavigation(true);
+            setShowMedal(true);
+            playMedalSound();
+          } else {
+            onBack();
+          }
+        } else {
+          setTimeout(() => {
+            handleNext();
+          }, 300);
+        }
       }, 2500);
     } else {
       // Play error sound
@@ -603,7 +635,13 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
       <MedalAnimation
         show={showMedal}
         setTitle={exerciseSet.title}
-        onComplete={() => setShowMedal(false)}
+        onComplete={() => {
+          setShowMedal(false);
+          if (pendingSetNavigation) {
+            setPendingSetNavigation(false);
+            onBack();
+          }
+        }}
       />
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pt-32 pb-8 px-8">
@@ -780,7 +818,7 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
                 <p className="text-5xl font-bold uppercase mb-4">
                   {isCorrect ? "BEN FET!" : "TORNA-HO A INTENTAR!"}
                 </p>
-                {isCorrect && justEarnedCoin && (
+                {isCorrect && justEarnedStar && (
                   <motion.div
                     className="flex items-center justify-center gap-3"
                     initial={{ scale: 0, opacity: 0 }}
@@ -799,9 +837,9 @@ export function ExerciseViewer({ setId, onBack, onProfileClick }: Props) {
                         repeatDelay: 0.5
                       }}
                     >
-                      🪙
+                      ⭐
                     </motion.span>
-                    <span className="text-3xl text-yellow-600 font-bold uppercase">+1 MONEDA!</span>
+                    <span className="text-3xl text-yellow-600 font-bold uppercase">+1 ESTRELLA!</span>
                   </motion.div>
                 )}
               </motion.div>

@@ -12,9 +12,9 @@ export function initAudioContext() {
 }
 
 /**
- * Play a coin collection sound
+ * Play a star reward sound
  */
-export function playCoinSound() {
+export function playStarSound() {
   if (!audioContext) {
     initAudioContext();
   }
@@ -28,7 +28,7 @@ export function playCoinSound() {
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
 
-    // Coin sound: quick ascending notes
+    // Star sound: quick ascending notes
     oscillator.type = 'sine';
     oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
     oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
@@ -41,7 +41,7 @@ export function playCoinSound() {
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.3);
   } catch (error) {
-    console.error('Error playing coin sound:', error);
+    console.error('Error playing star sound:', error);
   }
 }
 

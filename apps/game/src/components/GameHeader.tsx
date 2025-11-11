@@ -12,24 +12,24 @@ interface GameHeaderProps {
 }
 
 export function GameHeader({ onBack, showBackButton = true, onProfileClick }: GameHeaderProps) {
-  const { user, coins, medals, coinsToAnimate, setCoinsToAnimate } = useGameStore();
-  const [animatingCoins, setAnimatingCoins] = useState<number[]>([]);
+  const { user, stars, medals, starsToAnimate, setStarsToAnimate } = useGameStore();
+  const [animatingStars, setAnimatingStars] = useState<number[]>([]);
 
   useEffect(() => {
-    if (coinsToAnimate > 0) {
-      // Create an array of coin animations
-      const newCoins = Array.from({ length: coinsToAnimate }, (_, i) => Date.now() + i);
-      setAnimatingCoins(prev => [...prev, ...newCoins]);
+    if (starsToAnimate > 0) {
+      // Create an array of star animations
+      const newStars = Array.from({ length: starsToAnimate }, (_, i) => Date.now() + i);
+      setAnimatingStars(prev => [...prev, ...newStars]);
 
-      // Clear the coins to animate
-      setCoinsToAnimate(0);
+      // Clear the stars to animate
+      setStarsToAnimate(0);
 
-      // Remove coins after animation completes
+      // Remove stars after animation completes
       setTimeout(() => {
-        setAnimatingCoins(prev => prev.filter(id => !newCoins.includes(id)));
+        setAnimatingStars(prev => prev.filter(id => !newStars.includes(id)));
       }, 2000);
     }
-  }, [coinsToAnimate, setCoinsToAnimate]);
+  }, [starsToAnimate, setStarsToAnimate]);
 
   if (!user) return null;
 
@@ -118,7 +118,7 @@ export function GameHeader({ onBack, showBackButton = true, onProfileClick }: Ga
 
             {/* Right Section - Stats */}
             <div className="flex-1 flex justify-end gap-4">
-              {/* Coins Display */}
+              {/* Stars Display */}
               <motion.div
                 className="relative flex items-center gap-2 bg-yellow-400/20 backdrop-blur-md rounded-xl px-4 py-2"
                 initial={{ scale: 0 }}
@@ -137,23 +137,23 @@ export function GameHeader({ onBack, showBackButton = true, onProfileClick }: Ga
                     repeatDelay: 3
                   }}
                 >
-                  🪙
+                  ⭐
                 </motion.div>
                 <motion.span
-                  key={coins}
+                  key={stars}
                   className="text-white font-bold text-2xl"
                   initial={{ scale: 1.5, color: "#FBBF24" }}
                   animate={{ scale: 1, color: "#FFFFFF" }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  {coins}
+                  {stars}
                 </motion.span>
 
-                {/* Coin Animation Container */}
+                {/* Star Animation Container */}
                 <AnimatePresence>
-                  {animatingCoins.map((coinId, index) => (
+                  {animatingStars.map((starId, index) => (
                     <motion.div
-                      key={coinId}
+                      key={starId}
                       className="absolute text-4xl"
                       initial={{
                         x: -200,
@@ -177,7 +177,7 @@ export function GameHeader({ onBack, showBackButton = true, onProfileClick }: Ga
                         ease: "easeInOut"
                       }}
                     >
-                      ✨🪙
+                      ⭐
                     </motion.div>
                   ))}
                 </AnimatePresence>

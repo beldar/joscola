@@ -29,9 +29,9 @@ interface GameStore {
   user: User | null;
   currentSubject: string | null;
   progress: ExerciseProgress[];
-  coins: number;
+  stars: number;
   medals: Medal[];
-  coinsToAnimate: number;
+  starsToAnimate: number;
   sessionStartTime: number | null;
 
   // Actions
@@ -41,10 +41,10 @@ interface GameStore {
   markExerciseComplete: (exerciseSetId: string, exerciseId: string) => void;
   getExerciseProgress: (exerciseSetId: string, exerciseId: string) => ExerciseProgress | undefined;
   isExerciseSetComplete: (exerciseSetId: string) => boolean;
-  addCoins: (amount: number) => void;
+  addStars: (amount: number) => void;
   awardMedal: (setId: string, setTitle: string) => void;
   getMedalsForSet: (setId: string) => Medal[];
-  setCoinsToAnimate: (amount: number) => void;
+  setStarsToAnimate: (amount: number) => void;
   startSession: () => void;
   endSession: () => void;
   clearAllData: () => void;
@@ -57,9 +57,9 @@ export const useGameStore = create<GameStore>()(
       user: null,
       currentSubject: null,
       progress: [],
-      coins: 0,
+      stars: 0,
       medals: [],
-      coinsToAnimate: 0,
+      starsToAnimate: 0,
       sessionStartTime: null,
 
       setUser: (user) => set({
@@ -145,15 +145,15 @@ export const useGameStore = create<GameStore>()(
         });
       },
 
-      addCoins: (amount) => {
+      addStars: (amount) => {
         set((state) => ({
-          coins: state.coins + amount,
-          coinsToAnimate: amount
+          stars: state.stars + amount,
+          starsToAnimate: amount
         }));
       },
 
-      setCoinsToAnimate: (amount) => {
-        set({ coinsToAnimate: amount });
+      setStarsToAnimate: (amount) => {
+        set({ starsToAnimate: amount });
       },
 
       awardMedal: (setId, setTitle) => {
@@ -199,9 +199,9 @@ export const useGameStore = create<GameStore>()(
           user: null,
           currentSubject: null,
           progress: [],
-          coins: 0,
+          stars: 0,
           medals: [],
-          coinsToAnimate: 0,
+          starsToAnimate: 0,
           sessionStartTime: null,
         });
       },

@@ -10,6 +10,8 @@ interface Props {
 }
 
 export function Grid100Exercise({ exercise, onAnswer, answers }: Props) {
+  const totalCells = exercise.maxNumber ?? 100;
+
   const handleInputChange = (number: number, value: string) => {
     const newAnswers = new Map(answers);
     if (value === "") {
@@ -28,7 +30,7 @@ export function Grid100Exercise({ exercise, onAnswer, answers }: Props) {
       <div className="flex justify-center">
         <div className="inline-block bg-orange-50 rounded-2xl p-6 border-4 border-orange-300">
           <div className="grid grid-cols-10 gap-1">
-            {Array.from({ length: 100 }, (_, i) => {
+            {Array.from({ length: totalCells }, (_, i) => {
               const num = i + 1;
               const isMissing = exercise.missingNumbers.includes(num);
 
@@ -69,7 +71,7 @@ export function Grid100Exercise({ exercise, onAnswer, answers }: Props) {
 
       <div className="text-center">
         <p className="text-lg text-gray-600 uppercase">
-          COMPLETA LA GRAELLA DEL 1 AL 100
+          COMPLETA LA GRAELLA DEL 1 AL {totalCells}
         </p>
       </div>
     </div>

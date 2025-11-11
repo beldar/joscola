@@ -59,6 +59,7 @@ export interface AdditionJumpsExercise extends BaseExercise {
 export interface Grid100Exercise extends BaseExercise {
   type: "grid-100";
   missingNumbers: number[];
+  maxNumber?: number;
 }
 
 export interface NumberSearchExercise extends BaseExercise {

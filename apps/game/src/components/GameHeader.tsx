@@ -172,7 +172,7 @@ export function GameHeader({ onBack, showBackButton = true, onProfileClick }: Ga
                         opacity: 0
                       }}
                       transition={{
-                        duration: 1.5,
+                        duration: 1.4,
                         delay: index * 0.1,
                         ease: "easeInOut"
                       }}

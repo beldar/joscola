@@ -77,7 +77,7 @@ interface Props {
   answers: Map<string, number>;
 }
 
-const shuffle = (array) => {
+const shuffle = (array: any[]) => {
   let currentIndex = array.length;
 
   // While there remain elements to shuffle...

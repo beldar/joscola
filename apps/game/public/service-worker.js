@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.1.7 - fix: resolve Vercel build errors in ReadingSpeedExercise
+// Version 1.1.8 - feat: caligraphy exercices
 
-const CACHE_NAME = 'joscola-v1.1.7';
-const RUNTIME_CACHE = 'joscola-runtime-v1.1.7';
+const CACHE_NAME = 'joscola-v1.1.8';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.8';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

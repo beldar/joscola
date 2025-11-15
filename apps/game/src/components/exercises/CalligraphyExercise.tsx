@@ -2,10 +2,10 @@
 
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect, useCallback } from "react";
-import type { CalligraphyExercise as CalligraphyType } from "@/lib/exercises/types";
+import type { CalligraphyExercise as CalligraphyExerciseType } from "@/lib/exercises/types";
 
 interface Props {
-  exercise: CalligraphyExercise;
+  exercise: CalligraphyExerciseType;
   onAnswer: (answers: Map<string, number>) => void;
   answers: Map<string, number>;
 }
@@ -316,16 +316,14 @@ export function CalligraphyExercise({ exercise, onAnswer, answers }: Props) {
 
     // Sync answers map with actual drawings
     if (completed.size > 0) {
-      const newAnswers = new Map(answers);
+      const newAnswers = new Map();
       completed.forEach((boxIndex) => {
         newAnswers.set(`box-${boxIndex}`, 1);
       });
 
-      // Only update if different
-      if (newAnswers.size !== answers.size) {
-        onAnswer(newAnswers);
-      }
+      onAnswer(newAnswers);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exercise.id, exercise.practiceBoxes]);
 
   const handleDrawingComplete = useCallback((boxIndex: number, paths: Point[][]) => {
@@ -449,7 +447,7 @@ export function CalligraphyExercise({ exercise, onAnswer, answers }: Props) {
             <li>• Practica la lletra <span className="font-bold text-2xl">{exercise.letter}</span> a cada quadre</li>
             <li>• Segueix les línies de guia (les dues línies sòlides)</li>
             <li>• Comença des del punt vermell 🔴</li>
-            <li>• Passa el ratolí per sobre d'un quadre per veure el botó d'esborrar</li>
+            <li>• Passa el ratolí per sobre d&apos;un quadre per veure el botó d&apos;esborrar</li>
             <li>• Els teus dibuixos es guarden automàticament!</li>
           </ul>
         </div>

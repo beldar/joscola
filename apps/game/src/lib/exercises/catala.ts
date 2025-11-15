@@ -1,4 +1,4 @@
-import type { ExerciseSet, ReadingSpeedExercise } from "./types";
+import type { ExerciseSet, ReadingSpeedExercise, CalligraphyExercise } from "./types";
 
 // Based on the reading speed method from the PDF
 // Each phase has 60 words arranged in 4 columns
@@ -176,6 +176,350 @@ const readingPhases = {
   ]
 };
 
+// Calligraphy exercises for Catalan lowercase cursive letters
+const calligraphyExercises: CalligraphyExercise[] = [
+  // Vowels first
+  {
+    id: "calligraphy-a",
+    type: "calligraphy",
+    title: "Lletra A",
+    instructions: "Practica l'escriptura de la lletra 'a' en lletra lligada",
+    letter: "a",
+    letterDisplay: "A",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-e",
+    type: "calligraphy",
+    title: "Lletra E",
+    instructions: "Practica l'escriptura de la lletra 'e' en lletra lligada",
+    letter: "e",
+    letterDisplay: "E",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-i",
+    type: "calligraphy",
+    title: "Lletra I",
+    instructions: "Practica l'escriptura de la lletra 'i' en lletra lligada",
+    letter: "i",
+    letterDisplay: "I",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-o",
+    type: "calligraphy",
+    title: "Lletra O",
+    instructions: "Practica l'escriptura de la lletra 'o' en lletra lligada",
+    letter: "o",
+    letterDisplay: "O",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-u",
+    type: "calligraphy",
+    title: "Lletra U",
+    instructions: "Practica l'escriptura de la lletra 'u' en lletra lligada",
+    letter: "u",
+    letterDisplay: "U",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  // Consonants
+  {
+    id: "calligraphy-b",
+    type: "calligraphy",
+    title: "Lletra B",
+    instructions: "Practica l'escriptura de la lletra 'b' en lletra lligada",
+    letter: "b",
+    letterDisplay: "B",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-c",
+    type: "calligraphy",
+    title: "Lletra C",
+    instructions: "Practica l'escriptura de la lletra 'c' en lletra lligada",
+    letter: "c",
+    letterDisplay: "C",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-d",
+    type: "calligraphy",
+    title: "Lletra D",
+    instructions: "Practica l'escriptura de la lletra 'd' en lletra lligada",
+    letter: "d",
+    letterDisplay: "D",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-f",
+    type: "calligraphy",
+    title: "Lletra F",
+    instructions: "Practica l'escriptura de la lletra 'f' en lletra lligada",
+    letter: "f",
+    letterDisplay: "F",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-g",
+    type: "calligraphy",
+    title: "Lletra G",
+    instructions: "Practica l'escriptura de la lletra 'g' en lletra lligada",
+    letter: "g",
+    letterDisplay: "G",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-h",
+    type: "calligraphy",
+    title: "Lletra H",
+    instructions: "Practica l'escriptura de la lletra 'h' en lletra lligada",
+    letter: "h",
+    letterDisplay: "H",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-j",
+    type: "calligraphy",
+    title: "Lletra J",
+    instructions: "Practica l'escriptura de la lletra 'j' en lletra lligada",
+    letter: "j",
+    letterDisplay: "J",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-k",
+    type: "calligraphy",
+    title: "Lletra K",
+    instructions: "Practica l'escriptura de la lletra 'k' en lletra lligada",
+    letter: "k",
+    letterDisplay: "K",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-l",
+    type: "calligraphy",
+    title: "Lletra L",
+    instructions: "Practica l'escriptura de la lletra 'l' en lletra lligada",
+    letter: "l",
+    letterDisplay: "L",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-m",
+    type: "calligraphy",
+    title: "Lletra M",
+    instructions: "Practica l'escriptura de la lletra 'm' en lletra lligada",
+    letter: "m",
+    letterDisplay: "M",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-n",
+    type: "calligraphy",
+    title: "Lletra N",
+    instructions: "Practica l'escriptura de la lletra 'n' en lletra lligada",
+    letter: "n",
+    letterDisplay: "N",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-p",
+    type: "calligraphy",
+    title: "Lletra P",
+    instructions: "Practica l'escriptura de la lletra 'p' en lletra lligada",
+    letter: "p",
+    letterDisplay: "P",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-q",
+    type: "calligraphy",
+    title: "Lletra Q",
+    instructions: "Practica l'escriptura de la lletra 'q' en lletra lligada",
+    letter: "q",
+    letterDisplay: "Q",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-r",
+    type: "calligraphy",
+    title: "Lletra R",
+    instructions: "Practica l'escriptura de la lletra 'r' en lletra lligada",
+    letter: "r",
+    letterDisplay: "R",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-s",
+    type: "calligraphy",
+    title: "Lletra S",
+    instructions: "Practica l'escriptura de la lletra 's' en lletra lligada",
+    letter: "s",
+    letterDisplay: "S",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-t",
+    type: "calligraphy",
+    title: "Lletra T",
+    instructions: "Practica l'escriptura de la lletra 't' en lletra lligada",
+    letter: "t",
+    letterDisplay: "T",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-v",
+    type: "calligraphy",
+    title: "Lletra V",
+    instructions: "Practica l'escriptura de la lletra 'v' en lletra lligada",
+    letter: "v",
+    letterDisplay: "V",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-w",
+    type: "calligraphy",
+    title: "Lletra W",
+    instructions: "Practica l'escriptura de la lletra 'w' en lletra lligada",
+    letter: "w",
+    letterDisplay: "W",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-x",
+    type: "calligraphy",
+    title: "Lletra X",
+    instructions: "Practica l'escriptura de la lletra 'x' en lletra lligada",
+    letter: "x",
+    letterDisplay: "X",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-y",
+    type: "calligraphy",
+    title: "Lletra Y",
+    instructions: "Practica l'escriptura de la lletra 'y' en lletra lligada",
+    letter: "y",
+    letterDisplay: "Y",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+  {
+    id: "calligraphy-z",
+    type: "calligraphy",
+    title: "Lletra Z",
+    instructions: "Practica l'escriptura de la lletra 'z' en lletra lligada",
+    letter: "z",
+    letterDisplay: "Z",
+    letterType: "lowercase",
+    style: "cursive",
+    practiceBoxes: 18,
+    showGuidelines: true,
+    showModel: true,
+  },
+];
+
 // Create exercise sets for Catalan reading speed
 export const catalaExerciseSets: ExerciseSet[] = [
   {
@@ -287,6 +631,60 @@ export const catalaExerciseSets: ExerciseSet[] = [
         timeLimit: 120,
         columns: 4
       } as ReadingSpeedExercise
+    ]
+  },
+  {
+    id: "calligraphy-vowels",
+    title: "Cal·ligrafia - Vocals",
+    icon: "✍️",
+    exercises: [
+      calligraphyExercises[0], // a
+      calligraphyExercises[1], // e
+      calligraphyExercises[2], // i
+      calligraphyExercises[3], // o
+      calligraphyExercises[4], // u
+    ]
+  },
+  {
+    id: "calligraphy-consonants-1",
+    title: "Cal·ligrafia - Consonants (A-G)",
+    icon: "✍️",
+    exercises: [
+      calligraphyExercises[5],  // b
+      calligraphyExercises[6],  // c
+      calligraphyExercises[7],  // d
+      calligraphyExercises[8],  // f
+      calligraphyExercises[9],  // g
+    ]
+  },
+  {
+    id: "calligraphy-consonants-2",
+    title: "Cal·ligrafia - Consonants (H-N)",
+    icon: "✍️",
+    exercises: [
+      calligraphyExercises[10], // h
+      calligraphyExercises[11], // j
+      calligraphyExercises[12], // k
+      calligraphyExercises[13], // l
+      calligraphyExercises[14], // m
+      calligraphyExercises[15], // n
+    ]
+  },
+  {
+    id: "calligraphy-consonants-3",
+    title: "Cal·ligrafia - Consonants (P-Z)",
+    icon: "✍️",
+    exercises: [
+      calligraphyExercises[16], // p
+      calligraphyExercises[17], // q
+      calligraphyExercises[18], // r
+      calligraphyExercises[19], // s
+      calligraphyExercises[20], // t
+      calligraphyExercises[21], // v
+      calligraphyExercises[22], // w
+      calligraphyExercises[23], // x
+      calligraphyExercises[24], // y
+      calligraphyExercises[25], // z
     ]
   }
 ];

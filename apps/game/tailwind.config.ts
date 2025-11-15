@@ -37,6 +37,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        massallera: ["Massallera", "cursive"],
       },
       animation: {
         "bounce-slow": "bounce 2s infinite",

@@ -22,6 +22,7 @@ import { MagicSquareExercise } from "./exercises/MagicSquareExercise";
 import { NumberLineExercise } from "./exercises/NumberLineExercise";
 import { EstimationExercise } from "./exercises/EstimationExercise";
 import { ReadingSpeedExercise } from "./exercises/ReadingSpeedExercise";
+import { CalligraphyExercise } from "./exercises/CalligraphyExercise";
 import type { Exercise } from "@/lib/exercises/types";
 
 interface Props {
@@ -405,6 +406,34 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
         return wordsRead === exercise.words.length;
       }
 
+      case "calligraphy": {
+        // Calligraphy is considered complete when all practice boxes have been drawn in
+        // We need to check localStorage directly for the actual drawings
+        const totalBoxes = exercise.practiceBoxes;
+        let completedBoxes = 0;
+
+        if (typeof window !== "undefined") {
+          for (let i = 0; i < totalBoxes; i++) {
+            const storageKey = `calligraphy-drawing-${exercise.id}-box-${i}`;
+            const saved = localStorage.getItem(storageKey);
+
+            if (saved) {
+              try {
+                const savedPaths = JSON.parse(saved);
+                if (savedPaths && savedPaths.length > 0) {
+                  completedBoxes++;
+                }
+              } catch (e) {
+                // Ignore parse errors
+              }
+            }
+          }
+        }
+
+        // Success if all boxes are completed
+        return completedBoxes === totalBoxes;
+      }
+
       default:
         return false;
     }
@@ -523,6 +552,7 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
   const isCorrect = corrections.get(currentExercise.id) === true;
   const canCorrect = answers.size > 0;
   const isReadingSpeed = currentExercise.type === "reading-speed";
+  const isCalligraphy = currentExercise.type === "calligraphy";
 
   const renderExercise = () => {
     switch (currentExercise.type) {
@@ -720,6 +750,15 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
           />
         );
 
+      case "calligraphy":
+        return (
+          <CalligraphyExercise
+            exercise={currentExercise}
+            answers={answers as Map<string, number>}
+            onAnswer={setAnswers}
+          />
+        );
+
       default:
         return <div>Exercise type not implemented yet</div>;
     }
@@ -847,7 +886,7 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
               >
                 TORNAR A INTENTAR 🔄
               </Button>
-            ) : !isReadingSpeed ? (
+            ) : !isReadingSpeed && !isCalligraphy ? (
               <Button
                 variant="primary"
                 size="lg"
@@ -856,6 +895,15 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
                 className="text-2xl px-12 py-6 uppercase"
               >
                 CORREGIR ✓
+              </Button>
+            ) : isCalligraphy && canCorrect ? (
+              <Button
+                variant="success"
+                size="lg"
+                onClick={handleCorrection}
+                className="text-2xl px-12 py-6 uppercase"
+              >
+                ACABAR LLETRA ✓
               </Button>
             ) : null}
           </div>

@@ -12,7 +12,8 @@ export type ExerciseType =
   | "magic-square"
   | "number-line"
   | "estimation"
-  | "reading-speed";
+  | "reading-speed"
+  | "calligraphy";
 
 export interface BaseExercise {
   id: string;
@@ -131,6 +132,17 @@ export interface ReadingSpeedExercise extends BaseExercise {
   columns: number; // number of columns to display words in
 }
 
+export interface CalligraphyExercise extends BaseExercise {
+  type: "calligraphy";
+  letter: string; // 'a', 'b', 'c', etc.
+  letterDisplay: string; // Display version (uppercase for header)
+  letterType: "lowercase" | "uppercase";
+  style: "cursive" | "print";
+  practiceBoxes: number; // Number of practice boxes (typically 12-18)
+  showGuidelines: boolean; // Show dotted lines for writing guides
+  showModel: boolean; // Show model letter in first box
+}
+
 export type Exercise =
   | NumberSequenceExercise
   | CountingExercise
@@ -145,7 +157,8 @@ export type Exercise =
   | MagicSquareExercise
   | NumberLineExercise
   | EstimationExercise
-  | ReadingSpeedExercise;
+  | ReadingSpeedExercise
+  | CalligraphyExercise;
 
 export interface ExerciseSet {
   id: string;

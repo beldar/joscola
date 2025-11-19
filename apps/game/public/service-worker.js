@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.1.8 - feat: caligraphy exercices
+// Version 1.1.9 - fix:build
 
-const CACHE_NAME = 'joscola-v1.1.8';
-const RUNTIME_CACHE = 'joscola-runtime-v1.1.8';
+const CACHE_NAME = 'joscola-v1.1.9';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.9';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

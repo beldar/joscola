@@ -234,8 +234,8 @@ function BoxCanvas({ boxIndex, exerciseId, letter, showModel, showGuidelines, on
         </div>
       )}
 
-      {/* Model letter (only first box) */}
-      {showModel && boxIndex === 0 && (
+      {/* Model letter - show in first LINE (first 6 boxes) for tracing */}
+      {showModel && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-15">
           <div className="text-[80px] font-bold text-gray-600 font-massallera">
             {letter}
@@ -243,8 +243,8 @@ function BoxCanvas({ boxIndex, exerciseId, letter, showModel, showGuidelines, on
         </div>
       )}
 
-      {/* Starting dot for first few boxes - positioned where letter should start (on left, between the lines) */}
-      {boxIndex < 6 && paths.length === 0 && (
+      {/* Starting dot - show in ALL boxes when empty */}
+      {paths.length === 0 && (
         <div
           className="absolute w-3 h-3 bg-red-500 rounded-full animate-pulse pointer-events-none shadow-lg"
           style={{
@@ -412,7 +412,7 @@ export function CalligraphyExercise({ exercise, onAnswer, answers }: Props) {
               boxIndex={index}
               exerciseId={exercise.id}
               letter={exercise.letter}
-              showModel={exercise.showModel && index === 0}
+              showModel={exercise.showModel && index < 6}
               showGuidelines={exercise.showGuidelines}
               onDrawingComplete={handleDrawingComplete}
               onDrawingCleared={handleDrawingCleared}
@@ -444,9 +444,10 @@ export function CalligraphyExercise({ exercise, onAnswer, answers }: Props) {
         <div className="bg-blue-50 rounded-2xl p-6 border-2 border-blue-200">
           <h3 className="text-xl font-bold uppercase mb-3">📝 Com fer-ho:</h3>
           <ul className="space-y-2 text-lg">
-            <li>• Practica la lletra <span className="font-bold text-2xl">{exercise.letter}</span> a cada quadre</li>
+            <li>• <span className="font-bold">Primera línia:</span> Repassa la lletra <span className="font-bold text-2xl">{exercise.letter}</span> seguint l&apos;ombra marcada</li>
+            <li>• <span className="font-bold">Altres línies:</span> Practica escrivint la lletra tu sol/a</li>
+            <li>• Comença sempre des del punt vermell 🔴</li>
             <li>• Segueix les línies de guia (les dues línies sòlides)</li>
-            <li>• Comença des del punt vermell 🔴</li>
             <li>• Passa el ratolí per sobre d&apos;un quadre per veure el botó d&apos;esborrar</li>
             <li>• Els teus dibuixos es guarden automàticament!</li>
           </ul>

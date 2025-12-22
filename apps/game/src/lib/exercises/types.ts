@@ -13,7 +13,9 @@ export type ExerciseType =
   | "number-line"
   | "estimation"
   | "reading-speed"
-  | "calligraphy";
+  | "calligraphy"
+  | "word-search"
+  | "pictogram-crossword";
 
 export interface BaseExercise {
   id: string;
@@ -143,6 +145,33 @@ export interface CalligraphyExercise extends BaseExercise {
   showModel: boolean; // Show model letter in first box
 }
 
+export interface WordSearchExercise extends BaseExercise {
+  type: "word-search";
+  gridSize: number; // Size of the grid (e.g., 10 for 10x10)
+  words: string[]; // Words to find (4-6 letter Spanish words)
+  grid: string[][]; // Pre-generated grid with letters
+  wordPositions: Array<{
+    word: string;
+    startRow: number;
+    startCol: number;
+    direction: "horizontal" | "vertical" | "diagonal-down" | "diagonal-up";
+  }>;
+}
+
+export interface PictogramCrosswordExercise extends BaseExercise {
+  type: "pictogram-crossword";
+  gridSize: { rows: number; cols: number };
+  words: Array<{
+    word: string;
+    emoji: string;
+    startRow: number;
+    startCol: number;
+    direction: "horizontal" | "vertical";
+    clueNumber: number;
+  }>;
+  grid: (string | null)[][]; // null for blocked cells, empty string for fillable cells
+}
+
 export type Exercise =
   | NumberSequenceExercise
   | CountingExercise
@@ -158,7 +187,9 @@ export type Exercise =
   | NumberLineExercise
   | EstimationExercise
   | ReadingSpeedExercise
-  | CalligraphyExercise;
+  | CalligraphyExercise
+  | WordSearchExercise
+  | PictogramCrosswordExercise;
 
 export interface ExerciseSet {
   id: string;

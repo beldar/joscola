@@ -133,9 +133,19 @@ export const useGameStore = create<GameStore>()(
 
       isExerciseSetComplete: (exerciseSetId) => {
         const { progress } = get();
-        // Import the actual exercise set data
+        // Import all exercise set data from different subjects
         const { matematiquesExerciseSets } = require('./exercises/matematiques');
-        const exerciseSet = matematiquesExerciseSets.find((set: any) => set.id === exerciseSetId);
+        const { catalaExerciseSets } = require('./exercises/catala');
+        const { castellanoExerciseSets } = require('./exercises/castellano');
+
+        // Combine all exercise sets
+        const allExerciseSets = [
+          ...matematiquesExerciseSets,
+          ...catalaExerciseSets,
+          ...castellanoExerciseSets
+        ];
+
+        const exerciseSet = allExerciseSets.find((set: any) => set.id === exerciseSetId);
 
         if (!exerciseSet) return false;
 

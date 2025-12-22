@@ -71,7 +71,8 @@ export default function Home() {
       {user && !currentSubject && <SubjectSelector />}
       {user && currentSubject === "matematiques" && <ExerciseSetGrid subject="matematiques" />}
       {user && currentSubject === "catala" && <ExerciseSetGrid subject="catala" />}
-      {user && currentSubject && currentSubject !== "matematiques" && currentSubject !== "catala" && (
+      {user && currentSubject === "castella" && <ExerciseSetGrid subject="castella" />}
+      {user && currentSubject && currentSubject !== "matematiques" && currentSubject !== "catala" && currentSubject !== "castella" && (
         <div>Subject not implemented yet</div>
       )}
       <InstallPrompt />

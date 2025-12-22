@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@joscola/ui";
 import { matematiquesExerciseSets } from "@/lib/exercises/matematiques";
 import { catalaExerciseSets } from "@/lib/exercises/catala";
+import { castellanoExerciseSets } from "@/lib/exercises/castellano";
 import { useGameStore, EXERCISE_ANSWER_PREFIX, EXERCISE_CORRECTIONS_PREFIX } from "@/lib/store";
 import { GameHeader } from "./GameHeader";
 import { MedalAnimation } from "./MedalAnimation";
@@ -23,6 +24,8 @@ import { NumberLineExercise } from "./exercises/NumberLineExercise";
 import { EstimationExercise } from "./exercises/EstimationExercise";
 import { ReadingSpeedExercise } from "./exercises/ReadingSpeedExercise";
 import { CalligraphyExercise } from "./exercises/CalligraphyExercise";
+import { WordSearchExercise } from "./exercises/WordSearchExercise";
+import { PictogramCrosswordExercise } from "./exercises/PictogramCrosswordExercise";
 import type { Exercise } from "@/lib/exercises/types";
 
 interface Props {
@@ -84,7 +87,11 @@ const deleteAnswersFromStorage = (exerciseId: string) => {
 };
 
 export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProfileClick }: Props) {
-  const exerciseSets = subject === "catala" ? catalaExerciseSets : matematiquesExerciseSets;
+  const exerciseSets = subject === "catala"
+    ? catalaExerciseSets
+    : subject === "castella"
+      ? castellanoExerciseSets
+      : matematiquesExerciseSets;
   const exerciseSet = exerciseSets.find((s) => s.id === setId);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, number | string>>(new Map());
@@ -434,6 +441,36 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
         return completedBoxes === totalBoxes;
       }
 
+      case "word-search": {
+        // Word search is complete when all words are found
+        const foundWordsStr = answers.get("foundWords") as string | undefined;
+        if (!foundWordsStr) return false;
+        const foundWords = foundWordsStr.split(",").filter(w => w.length > 0);
+        return foundWords.length === exercise.words.length;
+      }
+
+      case "pictogram-crossword": {
+        // Crossword is complete when all words are correctly filled
+        return exercise.words.every(word => {
+          for (let i = 0; i < word.word.length; i++) {
+            const row = word.direction === "horizontal" ? word.startRow : word.startRow + i;
+            const col = word.direction === "horizontal" ? word.startCol + i : word.startCol;
+
+            // Check if cell has a pre-filled letter from the grid
+            const gridValue = exercise.grid[row]?.[col];
+            const isPreFilled = typeof gridValue === "string" && gridValue.length > 0;
+
+            // Use pre-filled value or user's answer
+            const cellValue = isPreFilled ? gridValue : (answers.get(`cell-${row}-${col}`) as string | undefined);
+
+            if (!cellValue || cellValue.toUpperCase() !== word.word[i].toUpperCase()) {
+              return false;
+            }
+          }
+          return true;
+        });
+      }
+
       default:
         return false;
     }
@@ -759,6 +796,24 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
           />
         );
 
+      case "word-search":
+        return (
+          <WordSearchExercise
+            exercise={currentExercise}
+            answers={answers as Map<string, string>}
+            onAnswer={setAnswers}
+          />
+        );
+
+      case "pictogram-crossword":
+        return (
+          <PictogramCrosswordExercise
+            exercise={currentExercise}
+            answers={answers as Map<string, string>}
+            onAnswer={setAnswers}
+          />
+        );
+
       default:
         return <div>Exercise type not implemented yet</div>;
     }
@@ -783,7 +838,7 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
       />
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pt-32 pb-8 px-8">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Exercise Info */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}

@@ -19,10 +19,10 @@ const subjects = [
   },
   {
     id: "castella",
-    name: "CASTELLÀ",
+    name: "CASTELLANO",
     icon: "📖",
     color: "from-yellow-400 to-yellow-600",
-    disabled: true,
+    disabled: false,
   },
   {
     id: "angles",

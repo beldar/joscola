@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.1.10 - fix: calligraphy
+// Version 1.1.11 - fix: security vuln
 
-const CACHE_NAME = 'joscola-v1.1.10';
-const RUNTIME_CACHE = 'joscola-runtime-v1.1.10';
+const CACHE_NAME = 'joscola-v1.1.11';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.11';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

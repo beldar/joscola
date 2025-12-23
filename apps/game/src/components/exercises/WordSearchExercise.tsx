@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import type { WordSearchExercise as WordSearchType } from "@/lib/exercises/types";
 
@@ -20,6 +20,8 @@ export function WordSearchExercise({ exercise, onAnswer, answers }: Props) {
   const [isSelecting, setIsSelecting] = useState(false);
   const [foundWords, setFoundWords] = useState<Set<string>>(new Set());
   const [foundCells, setFoundCells] = useState<Set<string>>(new Set());
+  const gridRef = useRef<HTMLDivElement>(null);
+  const cellRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   // Load found words from answers on mount
   useEffect(() => {
@@ -134,6 +136,39 @@ export function WordSearchExercise({ exercise, onAnswer, answers }: Props) {
     }
   };
 
+  // Handle touch move for mobile/tablet drag selection
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isSelecting || selectedCells.length === 0) return;
+
+    e.preventDefault(); // Prevent scrolling while selecting
+
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    // Find which cell the touch is over
+    const touchX = touch.clientX;
+    const touchY = touch.clientY;
+
+    // Check each cell to see if touch is over it
+    cellRefs.current.forEach((cellElement, key) => {
+      const rect = cellElement.getBoundingClientRect();
+      if (
+        touchX >= rect.left &&
+        touchX <= rect.right &&
+        touchY >= rect.top &&
+        touchY <= rect.bottom
+      ) {
+        const [row, col] = key.split('-').map(Number);
+        if (!isCellSelected(row, col)) {
+          const newCells = [...selectedCells, { row, col }];
+          if (isValidSelection(newCells)) {
+            setSelectedCells(newCells);
+          }
+        }
+      }
+    });
+  }, [isSelecting, selectedCells, isCellSelected, isValidSelection]);
+
   const checkWord = useCallback(() => {
     const selectedWord = getSelectedWord().toUpperCase();
 
@@ -229,16 +264,19 @@ export function WordSearchExercise({ exercise, onAnswer, answers }: Props) {
 
       {/* Letter Grid */}
       <div
+        ref={gridRef}
         className="bg-white rounded-2xl p-4 border-4 border-gray-200 overflow-x-auto"
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
         <div
           className="grid gap-1 mx-auto select-none"
           style={{
             gridTemplateColumns: `repeat(${exercise.gridSize}, minmax(0, 1fr))`,
-            maxWidth: `${exercise.gridSize * 48}px`
+            maxWidth: `${exercise.gridSize * 48}px`,
+            touchAction: "none" // Prevent browser scroll during touch selection
           }}
         >
           {exercise.grid.map((row, rowIndex) => (
@@ -249,6 +287,11 @@ export function WordSearchExercise({ exercise, onAnswer, answers }: Props) {
               return (
                 <motion.div
                   key={`${rowIndex}-${colIndex}`}
+                  ref={(el) => {
+                    if (el) {
+                      cellRefs.current.set(`${rowIndex}-${colIndex}`, el);
+                    }
+                  }}
                   onMouseDown={() => handleCellClick(rowIndex, colIndex)}
                   onMouseEnter={() => handleCellEnter(rowIndex, colIndex)}
                   onTouchStart={() => handleCellClick(rowIndex, colIndex)}

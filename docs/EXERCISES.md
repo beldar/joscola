@@ -2,7 +2,7 @@
 
 ## Visió General
 
-El sistema d'exercicis és el cor de l'aplicació Joscola. Està dissenyat per ser extensible, tipus segur i fàcil de mantenir.
+El sistema d'exercicis és el cor de l'aplicació Joscola. Està dissenyat per ser extensible, tipus segur i fàcil de mantenir. Actualment hi ha **17 tipus d'exercicis** implementats.
 
 ## Arquitectura dels Exercicis
 
@@ -31,18 +31,19 @@ interface ExerciseSet {
 Cada exercici té una estructura base i propietats específiques segons el seu tipus:
 
 ```typescript
-interface Exercise {
+interface BaseExercise {
   id: string;              // Identificador únic
   type: ExerciseType;      // Tipus d'exercici
   title: string;           // Títol en MAJÚSCULES
   instructions: string;    // Instruccions en MAJÚSCULES
-  // ... propietats específiques del tipus
 }
 ```
 
-### Tipus d'Exercicis
+### Tipus d'Exercicis (17 tipus)
 
-#### 1. Number Sequence (Seqüències Numèriques)
+## Exercicis de Matemàtiques
+
+### 1. Number Sequence (Seqüències Numèriques)
 
 **Tipus**: `number-sequence`
 
@@ -61,23 +62,27 @@ interface Exercise {
 
 **Validació**: Comprova que cada número perdut coincideixi amb el valor correcte de la seqüència.
 
-**Exemple**:
+### 2. Counting (Comptar Objectes)
+
+**Tipus**: `counting`
+
+**Propietats**:
 ```typescript
 {
-  id: "21-1",
-  type: "number-sequence",
-  title: "COMPTA ENDAVANT",
-  instructions: "OMPLE ELS BUITS",
-  start: 10,
-  length: 6,
-  step: 1,
-  direction: "forward",
-  missingIndices: [2, 4]
+  count: number;           // Quantitat correcta d'objectes
+  items: string;           // Emoji de l'objecte
+  imageType: "grid" | "scattered" | "groups";
 }
-// Renderitza: 10 → 11 → [?] → 13 → [?] → 15
 ```
 
-#### 2. Addition Three (Suma de Tres Números)
+**Component**: `CountingExercise.tsx`
+
+**Modes de Visualització**:
+- **grid**: Graella ordenada
+- **scattered**: Posició aleatòria
+- **groups**: Agrupats en desenes
+
+### 3. Addition Three (Suma de Tres Números)
 
 **Tipus**: `addition-three`
 
@@ -91,24 +96,9 @@ interface Exercise {
 
 **Component**: `AdditionThreeExercise.tsx`
 
-**Validació**: Comprova que el resultat sigui la suma dels tres números.
-
 **Representació Visual**: Mostra cercles de colors agrupats per facilitar el recompte.
 
-**Exemple**:
-```typescript
-{
-  id: "23-1",
-  type: "addition-three",
-  title: "SUMA TRES NÚMEROS",
-  instructions: "QUANT FA LA SUMA?",
-  numbers: [3, 4, 5],
-  showVisual: true
-}
-// Renderitza: 3 + 4 + 5 = [?]
-```
-
-#### 3. Subtraction Jumps (Resta Saltant pel 10)
+### 4. Subtraction Jumps (Resta Saltant pel 10)
 
 **Tipus**: `subtraction-jumps`
 
@@ -123,28 +113,9 @@ interface Exercise {
 
 **Component**: `SubtractionJumpsExercise.tsx`
 
-**Validació**: Comprova el resultat final de la resta.
+**Visualització**: Línia numèrica amb tren i arcs de salt.
 
-**Visualització**:
-- Línia numèrica amb tren
-- Arcs de salt mostrant els passos
-- Desglossament pas a pas: start → -X → 10 → -Y → result
-
-**Exemple**:
-```typescript
-{
-  id: "24-1",
-  type: "subtraction-jumps",
-  title: "RESTA SALTANT PEL 10",
-  instructions: "COMPLETA ELS SALTS PER RESTAR",
-  start: 16,
-  subtract: 4,
-  steps: [16, 12]
-}
-// 16 - 4 = 16 - 6 - 2 = 10 - 2 = 12
-```
-
-#### 4. Addition Jumps (Suma Saltant pel 10)
+### 5. Addition Jumps (Suma Saltant pel 10)
 
 **Tipus**: `addition-jumps`
 
@@ -161,66 +132,7 @@ interface Exercise {
 
 **Validació**: Comprova tant el resultat final com el pas intermedi (10).
 
-**Visualització**:
-- Línia numèrica del start al resultat
-- Dos arcs de salt: start → 10 → result
-- Desglossament: start → +X → [10] → +Y → result
-
-**Camps editables**:
-- Input pel resultat final
-- Input pel pas intermedi (sempre ha de ser 10)
-
-**Exemple**:
-```typescript
-{
-  id: "25-1",
-  type: "addition-jumps",
-  title: "SUMA SALTANT PEL 10",
-  instructions: "OMPLE ELS BUITS PER SUMAR COM SUGGEREIX EN BILLY",
-  start: 8,
-  add: 7,
-  steps: [8, 10, 15]
-}
-// 8 + 7 = 8 + 2 + 5 = 10 + 5 = 15
-// L'usuari ha d'omplir el "10" i el "15"
-```
-
-#### 5. Counting (Comptar Objectes)
-
-**Tipus**: `counting`
-
-**Propietats**:
-```typescript
-{
-  count: number;           // Quantitat correcta d'objectes
-  item: string;            // Emoji de l'objecte
-  displayMode: "grid" | "scattered" | "groups";
-}
-```
-
-**Component**: `CountingExercise.tsx`
-
-**Validació**: Comprova que el comptatge sigui correcte.
-
-**Modes de Visualització**:
-- **grid**: Graella ordenada
-- **scattered**: Posició aleatòria
-- **groups**: Agrupats en desenes
-
-**Exemple**:
-```typescript
-{
-  id: "21-1",
-  type: "counting",
-  title: "COMPTA",
-  instructions: "QUANTS N'HI HA?",
-  count: 24,
-  item: "🐶",
-  displayMode: "groups"
-}
-```
-
-#### 6. Grid 100 (Graella 1-100)
+### 6. Grid 100 (Graella 1-100)
 
 **Tipus**: `grid-100`
 
@@ -228,28 +140,228 @@ interface Exercise {
 ```typescript
 {
   missingNumbers: number[]; // Números que cal omplir
+  maxNumber?: number;       // Màxim de la graella (defecte: 100)
 }
 ```
 
 **Component**: `Grid100Exercise.tsx`
 
-**Validació**: Comprova que cada número perdut sigui correcte.
+**Visualització**: Graella 10x10 amb colors per múltiples de 10, parells i senars.
 
-**Visualització**:
-- Graella 10x10 (1-100)
-- Colors diferents per múltiples de 10 (blau), parells (taronja), senars (blanc)
-- Inputs per als números perduts
+### 7. Number Order (Ordenar Nombres)
 
-**Exemple**:
+**Tipus**: `number-order`
+
+**Propietats**:
 ```typescript
 {
-  id: "30-1",
-  type: "grid-100",
-  title: "GRAELLA 1-100",
-  instructions: "OMPLE ELS NÚMEROS QUE FALTEN",
-  missingNumbers: [23, 45, 67, 89]
+  numbers: number[];
+  question: "smallest" | "largest" | "order-asc" | "order-desc";
 }
 ```
+
+**Component**: `NumberOrderExercise.tsx`
+
+**Modes**:
+- `smallest`: Seleccionar el més petit
+- `largest`: Seleccionar el més gran
+- `order-asc`: Ordenar de petit a gran
+- `order-desc`: Ordenar de gran a petit
+
+### 8. Train Position (Posicions en un Tren)
+
+**Tipus**: `train-position`
+
+**Propietats**:
+```typescript
+{
+  trainLength: number;
+  signPositions: number[];
+  missingPositions: number[];
+  mode?: "fill-signs" | "place-signs" | "tunnel-fill";
+  availableSigns?: number[];
+  tunnels?: Array<{
+    start: number;
+    length: number;
+    variant?: "stone" | "moss" | "wood";
+  }>;
+}
+```
+
+**Component**: `TrainPositionExercise.tsx`
+
+**Modes**: Omplir signes, col·locar signes, o omplir túnels.
+
+### 9. Number Pattern (Patrons Numèrics)
+
+**Tipus**: `number-pattern`
+
+**Propietats**:
+```typescript
+{
+  patterns: Array<{
+    layout: "cross" | "line" | "square";
+    given: Array<{ position: string; value: number }>;
+    missing: string[];
+  }>;
+}
+```
+
+**Component**: `NumberPatternExercise.tsx`
+
+**Layouts**: Creus (+10/-10, +1/-1), línies seqüencials, quadrats.
+
+### 10. Magic Square (Quadrats Màgics)
+
+**Tipus**: `magic-square`
+
+**Propietats**:
+```typescript
+{
+  size: 2 | 3;
+  targetSum: number;
+  given: Array<{ row: number; col: number; value: number }>;
+  validateRow?: number;
+  validateColumn?: number;
+}
+```
+
+**Component**: `MagicSquareExercise.tsx`
+
+**Visualització**: Per a 3x3, el centre mostra un núvol amb la suma objectiu.
+
+### 11. Number Line (Recta Numèrica)
+
+**Tipus**: `number-line`
+
+**Propietats**:
+```typescript
+{
+  min: number;
+  max: number;
+  numbersToPlace: number[];
+}
+```
+
+**Component**: `NumberLineExercise.tsx`
+
+**Visualització**: Recta interactiva on cal col·locar números.
+
+### 12. Estimation (Estimació amb Diners)
+
+**Tipus**: `estimation`
+
+**Propietats**:
+```typescript
+{
+  money: number;
+  items: Array<{ name: string; price: number; icon: string }>;
+  question: string;
+}
+```
+
+**Component**: `EstimationExercise.tsx`
+
+**Validació**: Comprova que la selecció d'articles maximitza la despesa sense superar el pressupost.
+
+## Exercicis de Llengua (Català/Castellà)
+
+### 13. Reading Speed (Velocitat Lectora)
+
+**Tipus**: `reading-speed`
+
+**Propietats**:
+```typescript
+{
+  phase: number;        // 1-9
+  words: string[];      // 60 paraules a llegir
+  timeLimit: number;    // En segons (120 per 2 minuts)
+  columns: number;      // Nombre de columnes
+}
+```
+
+**Component**: `ReadingSpeedExercise.tsx`
+
+**Funcionalitat**: L'usuari ha de llegir 60 paraules en 2 minuts. Es resalta la paraula actual i es pot parar/reiniciar.
+
+### 14. Calligraphy (Cal·ligrafia)
+
+**Tipus**: `calligraphy`
+
+**Propietats**:
+```typescript
+{
+  letter: string;           // 'a', 'b', 'c', etc.
+  letterDisplay: string;    // Versió per mostrar
+  letterType: "lowercase" | "uppercase";
+  style: "cursive" | "print";
+  practiceBoxes: number;    // Nombre de caixes (12-18)
+  showGuidelines: boolean;
+  showModel: boolean;
+}
+```
+
+**Component**: `CalligraphyExercise.tsx`
+
+**Funcionalitat**: Canvas per dibuixar lletres amb guies i model. Suport per touch i mouse.
+
+### 15. Word Search (Sopa de Lletres)
+
+**Tipus**: `word-search`
+
+**Propietats**:
+```typescript
+{
+  gridSize: number;         // Mida de la graella (ex: 10x10)
+  words: string[];          // Paraules a trobar
+  grid: string[][];         // Graella pre-generada
+  wordPositions: Array<{
+    word: string;
+    startRow: number;
+    startCol: number;
+    direction: "horizontal" | "vertical" | "diagonal-down" | "diagonal-up";
+  }>;
+}
+```
+
+**Component**: `WordSearchExercise.tsx`
+
+**Funcionalitat**: Selecció de paraules arrossegant el dit/ratolí. Suport complet per touch amb `onTouchMove`.
+
+### 16. Pictogram Crossword (Crucigrama amb Pictogrames)
+
+**Tipus**: `pictogram-crossword`
+
+**Propietats**:
+```typescript
+{
+  gridSize: { rows: number; cols: number };
+  words: Array<{
+    word: string;
+    emoji: string;          // Pista visual
+    startRow: number;
+    startCol: number;
+    direction: "horizontal" | "vertical";
+    clueNumber: number;
+  }>;
+  grid: (string | null)[][]; // null per cel·les bloquejades
+}
+```
+
+**Component**: `PictogramCrosswordExercise.tsx`
+
+**Funcionalitats**:
+- Pistes amb emojis (pictogrames)
+- Navegació amb teclat entre cel·les
+- Botó "no entiendo los dibujos..." per mostrar les paraules
+- Suport per cel·les pre-omplides
+- Números de pista per horizontal i vertical
+
+### 17. Number Search (No implementat visualment)
+
+**Tipus**: `number-search`
+
+**Nota**: Aquest tipus està definit a types.ts però no té component visual implementat.
 
 ## ExerciseViewer Component
 
@@ -258,9 +370,10 @@ interface Exercise {
 1. **Renderització**: Mostra l'exercici actual utilitzant el component adequat
 2. **Navegació**: Gestiona el canvi entre exercicis amb botons anterior/següent
 3. **Validació**: Comprova les respostes de l'usuari
-4. **Feedback**: Mostra animacions de correcte/incorrecte
+4. **Feedback**: Mostra animacions de correcte/incorrecte amb sons
 5. **Persistència**: Guarda respostes i correccions a localStorage
 6. **Progrés**: Actualitza indicadors de progrés
+7. **Gamificació**: Atorga estrelles i medalles
 
 ### Flux de Correcció
 
@@ -273,11 +386,14 @@ interface Exercise {
    ↓
 4. Si CORRECTE:
    - Guardar resposta i correcció a localStorage
+   - Reproduir so d'èxit
    - Mostrar "BEN FET!" (2.5s amb animació)
+   - Atorgar 1 estrella (si és primera vegada)
    - Auto-avançar al següent exercici
-   - Marcar exercici com a completat al Zustand store
+   - Si és l'últim: comprovar medalla
 
    Si INCORRECTE:
+   - Reproduir so d'error
    - Mostrar "TORNA-HO A INTENTAR!" (2s amb animació)
    - Mantenir respostes
    - Mostrar botó "TORNAR A INTENTAR"
@@ -293,46 +409,18 @@ const validateAnswer = (exercise: Exercise, answers: Map<string, number | string
     case "number-sequence":
       // Validar cada posició perduda
 
-    case "addition-three":
-      // Validar suma total
+    case "magic-square":
+      // Validar files i columnes especificades
 
-    case "addition-jumps":
-      // Validar resultat final i pas pel 10
+    case "word-search":
+      // Validar que s'han trobat totes les paraules
 
-    // ... altres tipus
-  }
-};
-```
-
-### Rendering Pattern
-
-Cada tipus d'exercici té el seu component:
-
-```typescript
-const renderExercise = () => {
-  switch (currentExercise.type) {
-    case "number-sequence":
-      return <NumberSequenceExercise
-        exercise={currentExercise}
-        answers={answers}
-        onAnswer={setAnswers}
-      />;
+    case "pictogram-crossword":
+      // Validar cada lletra de cada paraula
 
     // ... altres tipus
   }
 };
-```
-
-### Props del Component d'Exercici
-
-Tots els components d'exercici segueixen aquesta interfície:
-
-```typescript
-interface Props {
-  exercise: SpecificExerciseType;  // Tipus específic d'exercici
-  answers: Map<string, number>;    // Respostes actuals
-  onAnswer: (answers: Map<string, number>) => void;  // Callback per actualitzar
-}
 ```
 
 ## Navegació entre Exercicis
@@ -345,19 +433,6 @@ interface Props {
 4. **ESBORRAR 🗑️**: Elimina respostes i correcció guardades (només si correcte)
 5. **SEGÜENT →**: Va al següent exercici (només si correcte)
 6. **ACABAR 🎉**: Torna a la graella (últim exercici i correcte)
-
-### Càrrega de Dades
-
-Quan es navega a un exercici:
-
-```typescript
-useEffect(() => {
-  // Carregar respostes guardades de localStorage
-  const loadedAnswers = loadAnswersFromStorage(currentExercise.id);
-  setAnswers(loadedAnswers);
-  setShowCorrection(false);
-}, [currentExercise.id]);
-```
 
 ## Afegir un Nou Tipus d'Exercici
 
@@ -374,9 +449,13 @@ export interface MyNewExercise extends BaseExercise {
 // Afegir al tipus Exercise
 export type Exercise =
   | NumberSequenceExercise
-  | AdditionThreeExercise
   // ...
   | MyNewExercise;
+
+// Afegir al ExerciseType
+export type ExerciseType =
+  // ...
+  | "my-new-type";
 ```
 
 ### 2. Crear el Component
@@ -384,6 +463,17 @@ export type Exercise =
 A `/components/exercises/MyNewExercise.tsx`:
 
 ```typescript
+"use client";
+
+import { motion } from "framer-motion";
+import type { MyNewExercise as MyNewType } from "@/lib/exercises/types";
+
+interface Props {
+  exercise: MyNewType;
+  onAnswer: (answers: Map<string, number>) => void;
+  answers: Map<string, number>;
+}
+
 export function MyNewExercise({ exercise, answers, onAnswer }: Props) {
   const handleInputChange = (key: string, value: string) => {
     const newAnswers = new Map(answers);
@@ -397,7 +487,9 @@ export function MyNewExercise({ exercise, answers, onAnswer }: Props) {
   };
 
   return (
-    // JSX de l'exercici
+    <div className="space-y-6">
+      {/* JSX de l'exercici */}
+    </div>
   );
 }
 ```
@@ -407,15 +499,9 @@ export function MyNewExercise({ exercise, answers, onAnswer }: Props) {
 A `ExerciseViewer.tsx`:
 
 ```typescript
-const validateAnswer = (exercise: Exercise, answers: Map<string, number | string>): boolean => {
-  switch (exercise.type) {
-    // ... casos existents
-
-    case "my-new-type":
-      // Lògica de validació
-      return /* resultat booleà */;
-  }
-};
+case "my-new-type":
+  // Lògica de validació
+  return /* resultat booleà */;
 ```
 
 ### 4. Afegir Renderització
@@ -423,23 +509,19 @@ const validateAnswer = (exercise: Exercise, answers: Map<string, number | string
 A `ExerciseViewer.tsx`:
 
 ```typescript
-const renderExercise = () => {
-  switch (currentExercise.type) {
-    // ... casos existents
-
-    case "my-new-type":
-      return <MyNewExercise
-        exercise={currentExercise}
-        answers={answers as Map<string, number>}
-        onAnswer={setAnswers}
-      />;
-  }
-};
+case "my-new-type":
+  return (
+    <MyNewExercise
+      exercise={currentExercise}
+      answers={answers as Map<string, number>}
+      onAnswer={setAnswers}
+    />
+  );
 ```
 
 ### 5. Crear Dades d'Exercicis
 
-A `/lib/exercises/matematiques.ts` (o nova assignatura):
+A `/lib/exercises/matematiques.ts` (o `catala.ts`, `castellano.ts`):
 
 ```typescript
 {
@@ -467,6 +549,7 @@ Utilitzar claus descriptives i consistents:
 - `"pos-{index}"` per a posicions en seqüències
 - `"step-{index}"` per a passos intermedis
 - `"num-{number}"` per a números específics
+- `"cell-{row}-{col}"` per a cel·les de graelles
 
 ### 2. Validació
 
@@ -474,12 +557,12 @@ Utilitzar claus descriptives i consistents:
 - Gestionar casos edge (camps buits, valors incorrectes)
 - Validar tots els camps requerits
 
-### 3. Accessibilitat
+### 3. Touch Support
 
-- Inputs grans (mínim text-4xl)
-- Placeholders clars ("?")
-- Focus rings visibles
-- Colors amb bon contrast
+Per a exercicis interactius (word-search, calligraphy):
+- Utilitzar `onTouchStart`, `onTouchMove`, `onTouchEnd`
+- Afegir `touch-action: none` per evitar scroll
+- Usar refs per detectar elements sota el dit
 
 ### 4. Animacions
 

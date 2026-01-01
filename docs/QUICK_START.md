@@ -37,145 +37,127 @@ pnpm type-check   # Run TypeScript checks
 pnpm clean        # Clean build artifacts
 ```
 
-## Current Game
+## Application Structure
 
-**Math Addition Game** - Located at [apps/game/src/components/MathGame.tsx](apps/game/src/components/MathGame.tsx)
+The app follows this flow:
 
-Features:
-- Addition problems (1-10)
-- Multiple choice answers
-- Score tracking
-- Animated feedback
-- Kid-friendly interface
+```
+1. Onboarding → Introduir nom, edat i avatar
+2. SubjectSelector → Triar assignatura (Matemàtiques, Català, Castellà)
+3. ExerciseSetGrid → Veure conjunts d'exercicis
+4. ExerciseViewer → Fer exercicis individuals
+```
 
-## Adding a New Game
+## Key Files
 
-1. **Create a new component** in `apps/game/src/components/`:
+### Exercise Data
+- `apps/game/src/lib/exercises/matematiques.ts` - Exercicis de matemàtiques
+- `apps/game/src/lib/exercises/catala.ts` - Exercicis de català
+- `apps/game/src/lib/exercises/castellano.ts` - Exercicis de castellà
+- `apps/game/src/lib/exercises/types.ts` - Definicions de tipus
+
+### Components
+- `apps/game/src/components/Onboarding.tsx` - Pantalla inicial
+- `apps/game/src/components/SubjectSelector.tsx` - Selecció d'assignatura
+- `apps/game/src/components/ExerciseSetGrid.tsx` - Graella de conjunts
+- `apps/game/src/components/ExerciseViewer.tsx` - Visualitzador d'exercicis
+- `apps/game/src/components/exercises/` - Components específics per cada tipus
+
+### State & Storage
+- `apps/game/src/lib/store.ts` - Zustand store amb persist
+- `localStorage` - Respostes i correccions per exercici
+
+## Adding a New Exercise Type
+
+1. **Define interface** in `types.ts`:
+   ```typescript
+   export interface MyNewExercise extends BaseExercise {
+     type: "my-new-type";
+     // specific properties
+   }
+   ```
+
+2. **Create component** in `components/exercises/MyNewExercise.tsx`:
    ```tsx
    "use client";
 
-   import { useState } from "react";
-   import { Button, Card } from "@joscola/ui";
+   import { motion } from "framer-motion";
+   import type { MyNewExercise as MyNewType } from "@/lib/exercises/types";
 
-   export function MyNewGame() {
-     const [score, setScore] = useState(0);
+   interface Props {
+     exercise: MyNewType;
+     onAnswer: (answers: Map<string, number | string>) => void;
+     answers: Map<string, number | string>;
+   }
 
-     return (
-       <Card className="game-container">
-         <h2>My New Game</h2>
-         <Button
-           variant="primary"
-           size="lg"
-           onClick={() => setScore(score + 1)}
-         >
-           Click Me!
-         </Button>
-         <p>Score: {score}</p>
-       </Card>
-     );
+   export function MyNewExercise({ exercise, answers, onAnswer }: Props) {
+     // Implementation
    }
    ```
 
-2. **Add it to a page** in `apps/game/src/app/`:
-   ```tsx
-   import { MyNewGame } from "@/components/MyNewGame";
-
-   export default function Page() {
-     return <MyNewGame />;
-   }
+3. **Add validation** in `ExerciseViewer.tsx`:
+   ```typescript
+   case "my-new-type":
+     // Validation logic
+     return true/false;
    ```
 
-3. **Use shared components** from `@joscola/ui`:
-   - `Button` - Animated button with variants
-   - `Card` - Container with entrance animation
-   - More coming soon!
+4. **Add render case** in `ExerciseViewer.tsx`:
+   ```typescript
+   case "my-new-type":
+     return <MyNewExercise exercise={...} answers={...} onAnswer={...} />;
+   ```
 
-## Available UI Components
+5. **Create exercise data** in `matematiques.ts`, `catala.ts`, or `castellano.ts`.
 
-### Button
-```tsx
-<Button
-  variant="primary" | "secondary" | "success" | "danger"
-  size="sm" | "md" | "lg"
-  onClick={handleClick}
->
-  Click Me
-</Button>
-```
-
-### Card
-```tsx
-<Card interactive={true}>
-  Content here
-</Card>
-```
-
-## Utility Functions
-
-Located in `apps/game/src/lib/utils.ts`:
-
-```tsx
-import { shuffleArray, randomInRange, cn } from "@/lib/utils";
-
-// Shuffle an array
-const shuffled = shuffleArray([1, 2, 3, 4, 5]);
-
-// Random number in range
-const random = randomInRange(1, 10);
-
-// Merge Tailwind classes
-const classes = cn("text-blue-500", "font-bold");
-```
+See [EXERCISES.md](./EXERCISES.md) for detailed documentation.
 
 ## Styling with Tailwind
 
-The project uses Tailwind CSS. Common patterns:
-
+Common patterns:
 ```tsx
-// Container
-<div className="game-container">
+// Touch-friendly buttons
+<button className="min-h-[44px] min-w-[44px] text-xl">
 
-// Card style
-<div className="card">
+// Large readable text
+<h1 className="text-3xl sm:text-4xl font-bold uppercase">
 
-// Touch-friendly target
-<button className="touch-target">
+// Card containers
+<div className="bg-white rounded-2xl p-6 border-4 border-gray-200">
 
-// Gradient background
-<div className="bg-gradient-to-br from-blue-50 to-purple-50">
-```
-
-Custom colors available:
-- `primary-*` (red shades)
-- `secondary-*` (blue shades)
-
-## Animation with Framer Motion
-
-```tsx
-import { motion } from "framer-motion";
-
+// Animations
 <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  whileTap={{ scale: 0.95 }}
+  initial={{ opacity: 0, scale: 0.8 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ duration: 0.3 }}
 >
-  Content
-</motion.div>
 ```
+
+## PWA / Offline
+
+The app is a PWA with Service Worker support:
+- `apps/game/public/sw.js` - Service Worker
+- `apps/game/public/manifest.json` - Web App Manifest
+
+## Sounds
+
+Sounds use Web Audio API:
+- `apps/game/src/lib/sounds.ts` - Sound functions
+- `playSuccessSound()` - On correct answer
+- `playErrorSound()` - On incorrect answer
 
 ## Next Steps
 
-1. **Customize the Math Game** - Adjust difficulty, add subtraction, etc.
-2. **Create New Games** - Spelling, shapes, colors, memory games
-3. **Add Sound Effects** - Install `use-sound` package
-4. **Progress Tracking** - Use Zustand for state management
-5. **More Subjects** - Implement different educational topics
+1. **Add more exercises** to existing sets
+2. **Create new exercise types** for different learning goals
+3. **Implement English** as new subject
+4. **Add more gamification** features
 
-## Need Help?
+## Documentation
 
-- Read the [main README](README.md) for full documentation
-- Check Next.js docs: https://nextjs.org/docs
-- Framer Motion docs: https://www.framer.com/motion/
-- Tailwind CSS docs: https://tailwindcss.com/docs
+- [README.md](./README.md) - Project overview
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - Technical architecture
+- [EXERCISES.md](./EXERCISES.md) - Exercise system documentation
+- [STORAGE.md](./STORAGE.md) - Data persistence details
 
 Happy coding! 🎉

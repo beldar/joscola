@@ -19,6 +19,13 @@ Joscola utilitza **localStorage** del navegador per emmagatzemar totes les dades
     user: {
       name: string;
       age: number;
+      avatar: string;        // Emoji avatar seleccionat
+      stars: number;         // Estrelles totals acumulades
+      medals: Array<{
+        setId: string;       // ID del conjunt completat
+        emoji: string;       // Emoji del conjunt
+        earnedAt: Date;      // Data d'obtenció
+      }>;
     } | null,
     currentSubject: string | null,
     exerciseProgress: Array<{
@@ -37,6 +44,9 @@ Joscola utilitza **localStorage** del navegador per emmagatzemar totes les dades
 - En completar l'onboarding (setUser)
 - En seleccionar una assignatura (setSubject)
 - En completar correctament un exercici (markExerciseComplete)
+- En guanyar una estrella (addStar)
+- En guanyar una medalla (addMedal)
+- En canviar l'avatar (setAvatar)
 
 **Middleware**: `persist` de Zustand amb configuració per defecte
 
@@ -46,7 +56,21 @@ Joscola utilitza **localStorage** del navegador per emmagatzemar totes les dades
   "state": {
     "user": {
       "name": "JOAN",
-      "age": 6
+      "age": 6,
+      "avatar": "🧒",
+      "stars": 25,
+      "medals": [
+        {
+          "setId": "set-21",
+          "emoji": "🔢",
+          "earnedAt": "2025-11-08T14:00:00.000Z"
+        },
+        {
+          "setId": "set-50",
+          "emoji": "📖",
+          "earnedAt": "2025-11-10T10:30:00.000Z"
+        }
+      ]
     },
     "currentSubject": "matematiques",
     "exerciseProgress": [
@@ -219,6 +243,9 @@ const deleteAnswersFromStorage = (exerciseId: string) => {
    - saveAnswersToStorage(exerciseId, answers)
    - saveCorrectionsToStorage(setId, corrections)
    - markExerciseComplete() → actualitza Zustand → guarda a localStorage
+   - addStar() → incrementa comptador d'estrelles (si primera vegada)
+   - checkMedal() → si tots els exercicis del conjunt estan correctes:
+     - addMedal(setId, emoji) → afegeix medalla al perfil
 
    SI INCORRECTE:
    - saveAnswersToStorage(exerciseId, answers)  [per si vol continuar més tard]
@@ -250,7 +277,27 @@ const deleteAnswersFromStorage = (exerciseId: string) => {
    ↓
 3. Per cada exercici set:
    - Comprova corrections a localStorage
-   - Mostra ✓ verd si tots els exercicis estan correctes
+   - Mostra comptador d'estrelles
+   - Mostra medalla si el conjunt està completat
+```
+
+### Guanyar una Medalla
+
+```
+1. Usuari completa l'últim exercici d'un conjunt
+   ↓
+2. validateAnswer() → true
+   ↓
+3. saveCorrectionsToStorage() → tots els exercicis correctes
+   ↓
+4. checkMedal():
+   - Comprova si tots els exercicis del conjunt estan correctes
+   - Comprova si ja tenim la medalla
+   ↓
+5. SI nova medalla:
+   - addMedal(setId, emoji, new Date())
+   - Mostra MedalAnimation amb confetti
+   - Actualitza Zustand → guarda a localStorage
 ```
 
 ## Gestió de la Memòria
@@ -382,7 +429,12 @@ new Map(Object.entries(obj)) // Map(2) { "result" => 15, "step-1" => 10 }
 ## Claus Completes de localStorage
 
 ### Zustand Store
-- `game-storage`: Dades globals de l'aplicació
+- `game-storage`: Dades globals de l'aplicació (usuari, progrés, gamificació)
+
+### Dades de Gamificació (dins game-storage)
+- `user.stars`: Nombre total d'estrelles
+- `user.medals`: Array de medalles amb setId, emoji i data
+- `user.avatar`: Emoji de l'avatar seleccionat
 
 ### Per Exercici
 - `exercise-answers-21-1`: Respostes exercici "Comptem" #1
@@ -395,6 +447,8 @@ new Map(Object.entries(obj)) // Map(2) { "result" => 15, "step-1" => 10 }
 - ... (un per cada exercici completat/intentat)
 
 ### Per Conjunt d'Exercicis
+
+#### Matemàtiques
 - `exercise-corrections-set-21`: Correccions del conjunt "Comptem"
 - `exercise-corrections-set-22`: Correccions del conjunt "Ordena nombres"
 - `exercise-corrections-set-23`: Correccions del conjunt "Sumem 3 nombres"
@@ -402,4 +456,17 @@ new Map(Object.entries(obj)) // Map(2) { "result" => 15, "step-1" => 10 }
 - `exercise-corrections-set-25`: Correccions del conjunt "Sumem saltant"
 - `exercise-corrections-set-26`: Correccions del conjunt "Restem saltant pel 10"
 - `exercise-corrections-set-30`: Correccions del conjunt "Graella 1-100"
-- ... (un per cada conjunt amb exercicis intentats)
+- `exercise-corrections-set-31`: Correccions del conjunt "Tren dels nombres"
+- `exercise-corrections-set-32`: Correccions del conjunt "Recta numèrica"
+- `exercise-corrections-set-33`: Correccions del conjunt "Patrons numèrics"
+- `exercise-corrections-set-34`: Correccions del conjunt "Quadrats màgics"
+
+#### Català
+- `exercise-corrections-set-50` a `set-58`: Correccions "Velocitat lectora" (9 fases)
+- `exercise-corrections-set-60` a `set-65`: Correccions "Cal·ligrafia"
+
+#### Castellà
+- `exercise-corrections-set-70` a `set-78`: Correccions "Velocidad lectora" (9 fases)
+- `exercise-corrections-set-80` a `set-85`: Correccions "Caligrafía"
+- `exercise-corrections-set-86`: Correccions "Sopa de letras"
+- `exercise-corrections-set-87` a `set-88`: Correccions "Crucigrama"

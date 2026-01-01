@@ -21,12 +21,12 @@ Documentació completa del sistema d'exercicis, incloent tots els tipus implemen
 
 **Contingut**:
 - Estructura de dades (ExerciseSet, Exercise)
-- 6 tipus d'exercicis implementats amb exemples
+- 17 tipus d'exercicis implementats amb exemples
 - Component ExerciseViewer i les seves responsabilitats
-- Flux de correcció i validació
+- Flux de correcció i validació amb gamificació
 - Sistema de navegació entre exercicis
 - Guia pas a pas per afegir nous tipus d'exercicis
-- Millors pràctiques i patrons
+- Millors pràctiques, touch support i patrons
 
 ### [STORAGE.md](./STORAGE.md)
 Sistema de persistència utilitzant localStorage, incloent estratègies d'emmagatzematge, funcions helpers i debugging.
@@ -71,39 +71,72 @@ pnpm build
 - Aplicació educativa per a nens de 6-7 anys (1r de primària)
 - Interfície en **català** amb **tots els textos en MAJÚSCULES**
 - Optimitzada per a **tablets** amb interacció tàctil
-- Exercicis de **matemàtiques** (amb més assignatures planejades)
+- Exercicis de **matemàtiques**, **català** i **castellà**
 - **Persistència local** sense necessitat de backend
+- **PWA** amb suport offline
 
 ### Funcionalitats Actuals
 
-✅ Onboarding amb nom i edat
-✅ Selecció d'assignatura (Matemàtiques actiu)
-✅ 7 conjunts d'exercicis de matemàtiques
-✅ 6 tipus d'exercicis diferents
-✅ Sistema de correcció amb feedback visual
+✅ Onboarding amb nom, edat i selecció d'avatar
+✅ Selecció d'assignatura (Matemàtiques, Català, Castellà actius)
+✅ 17 tipus d'exercicis diferents
+✅ Sistema de correcció amb feedback visual i sons
 ✅ Navegació entre exercicis
 ✅ Persistència de respostes a localStorage
 ✅ Indicadors de progrés
 ✅ Animacions amb Framer Motion
+✅ **Sistema de gamificació**: Estrelles per exercici, medalles per conjunt
+✅ **Pàgina de perfil** amb estadístiques i medalles
+✅ **PWA** amb Service Worker per a funcionalitat offline
+✅ **Touch support complet** per a tablets
 
-### Tipus d'Exercicis Implementats
+### Tipus d'Exercicis Implementats (17 tipus)
 
+#### Matemàtiques (12 tipus)
 1. **number-sequence**: Seqüències numèriques (endavant/enrere, diferents passos)
-2. **addition-three**: Suma de tres números amb representació visual
-3. **subtraction-jumps**: Resta saltant pel 10 amb línia numèrica
-4. **addition-jumps**: Suma saltant pel 10 amb línia numèrica
-5. **counting**: Comptar objectes (grid/scattered/groups)
+2. **counting**: Comptar objectes (grid/scattered/groups)
+3. **addition-three**: Suma de tres números amb representació visual
+4. **subtraction-jumps**: Resta saltant pel 10 amb línia numèrica
+5. **addition-jumps**: Suma saltant pel 10 amb línia numèrica
 6. **grid-100**: Graella 1-100 amb números perduts
+7. **number-order**: Ordenar nombres (smallest/largest/order-asc/order-desc)
+8. **train-position**: Posicions en un tren amb túnels
+9. **number-pattern**: Patrons numèrics (cross/line/square)
+10. **magic-square**: Quadrats màgics 2x2 i 3x3
+11. **number-line**: Recta numèrica interactiva
+12. **estimation**: Estimació amb diners
+
+#### Llengua (5 tipus)
+13. **reading-speed**: Velocitat lectora (60 paraules en 2 minuts)
+14. **calligraphy**: Cal·ligrafia amb canvas per dibuixar
+15. **word-search**: Sopa de lletres amb selecció tàctil
+16. **pictogram-crossword**: Crucigrama amb pictogrames/emojis
+17. **number-search**: (Definit però no implementat visualment)
 
 ### Conjunts d'Exercicis Disponibles
 
-- 🔢 **COMPTEM** (21) - Comptar objectes
-- 📊 **ORDENA NOMBRES** (22) - Seqüències numèriques
-- ➕ **SUMEM 3 NOMBRES** (23) - Suma de tres números
-- ➖ **RESTEM SALTANT** (24) - Resta amb salts
-- 🦘 **SUMEM SALTANT** (25) - Suma amb salts pel 10
-- ⬇️ **RESTEM SALTANT PEL 10** (26) - Resta amb salts pel 10
-- 📐 **GRAELLA 1-100** (30) - Graella numèrica
+#### Matemàtiques
+- 🔢 **COMPTEM** (set-21) - Comptar objectes
+- 📊 **ORDENA NOMBRES** (set-22) - Seqüències numèriques
+- ➕ **SUMEM 3 NOMBRES** (set-23) - Suma de tres números
+- ➖ **RESTEM SALTANT** (set-24) - Resta amb salts
+- 🦘 **SUMEM SALTANT** (set-25) - Suma amb salts pel 10
+- ⬇️ **RESTEM SALTANT PEL 10** (set-26) - Resta amb salts pel 10
+- 📐 **GRAELLA 1-100** (set-30) - Graella numèrica
+- 🚂 **EL TREN DELS NOMBRES** (set-31) - Posicions en un tren
+- 🔢 **LA RECTA NUMÈRICA** (set-32) - Recta numèrica
+- 🔷 **PATRONS NUMÈRICS** (set-33) - Patrons en creu/línia/quadrat
+- ⬜ **QUADRATS MÀGICS** (set-34) - Quadrats màgics
+
+#### Català
+- 📖 **VELOCITAT LECTORA** (set-50 a set-58) - 9 fases de lectura
+- ✍️ **CAL·LIGRAFIA** (set-60 a set-65) - Lletres minúscules i majúscules
+
+#### Castellà
+- 📖 **VELOCIDAD LECTORA** (set-70 a set-78) - 9 fases de lectura
+- ✍️ **CALIGRAFÍA** (set-80 a set-85) - Letras minúsculas y mayúsculas
+- 🔍 **SOPA DE LETRAS** (set-86) - Soques de lletres
+- 🧩 **CRUCIGRAMA** (set-87 a set-88) - Crucigrames amb pictogrames
 
 ## 🎨 Principis de Disseny
 
@@ -119,16 +152,23 @@ Tots els textos estan en majúscules per facilitar la lectura als primers lector
 - Touch-friendly
 - No zoom no desitjat
 
-### 4. Feedback Visual
-- Animacions alegres
+### 4. Feedback Visual i Sonor
+- Animacions alegres amb Framer Motion
 - Colors brillants
 - Emojis representatius
 - Missatges clars de correcte/incorrecte
+- Sons d'èxit i error (Web Audio API)
 
 ### 5. Persistència Local
 - Tot es guarda al dispositiu
 - No cal connexió a internet
 - Privacitat total
+
+### 6. Gamificació
+- ⭐ Estrelles per cada exercici correcte (primera vegada)
+- 🏅 Medalles per completar conjunts d'exercicis
+- 👤 Perfil amb estadístiques i totes les medalles
+- 🎨 Avatars personalitzables
 
 ## 🏗️ Arquitectura
 
@@ -150,35 +190,39 @@ joscola/
 - **Framework**: Next.js 15 (App Router)
 - **React**: 19
 - **TypeScript**: Per tipus segur
-- **Zustand**: Gestió d'estat global
+- **Zustand**: Gestió d'estat global amb persist middleware
 - **Framer Motion**: Animacions
 - **Tailwind CSS**: Estils
 - **localStorage**: Persistència
+- **Web Audio API**: Sons
+- **PWA**: Service Worker per offline
 
 ## 🔄 Flux de l'Usuari
 
 ```
 1. ONBOARDING
-   Introduir nom i edat
+   Introduir nom, edat i seleccionar avatar
    ↓
 2. SELECCIÓ D'ASSIGNATURA
-   Triar Matemàtiques (altres pròximament)
+   Triar Matemàtiques, Català o Castellà
+   (Anglès pròximament)
    ↓
 3. GRAELLA D'EXERCICIS
    Veure tots els conjunts disponibles
-   Indicadors de progrés (✓ verd)
+   Indicadors de progrés (estrelles i medalles)
    ↓
 4. EXERCICIS INDIVIDUALS
    Completar exercici → CORREGIR
-   Feedback animat (BEN FET! / TORNA-HO A INTENTAR!)
+   Feedback animat amb sons (BEN FET! / TORNA-HO A INTENTAR!)
    Navegació: ← ANTERIOR | SEGÜENT →
    Opció d'ESBORRAR respostes
    ↓
-5. SEGÜENT EXERCICI
-   Repetir fins completar tots
+5. GUANYAR RECOMPENSES
+   ⭐ Estrella per cada exercici correcte
+   🏅 Medalla al completar el conjunt
    ↓
-6. TORNAR A LA GRAELLA
-   Veure progrés actualitzat
+6. PERFIL
+   Veure estadístiques, estrelles i medalles
 ```
 
 ## 📦 Persistència de Dades
@@ -187,11 +231,17 @@ joscola/
 
 Totes les dades es guarden localment:
 
-- **game-storage**: Dades globals (usuari, assignatura, progrés)
+- **game-storage**: Dades globals (usuari, assignatura, progrés, gamificació)
 - **exercise-answers-{id}**: Respostes per cada exercici
 - **exercise-corrections-{setId}**: Correccions per conjunt
 
 Veure [STORAGE.md](./STORAGE.md) per detalls complets.
+
+### Gamificació
+
+- **stars**: Estrelles totals acumulades
+- **medals**: Array de medalles amb setId, emoji i data
+- **avatar**: Avatar seleccionat per l'usuari
 
 ## 🧩 Afegir Nous Exercicis
 
@@ -201,7 +251,7 @@ Veure [STORAGE.md](./STORAGE.md) per detalls complets.
 2. Crear component a `components/exercises/`
 3. Afegir validació a `ExerciseViewer.tsx`
 4. Afegir render case a `ExerciseViewer.tsx`
-5. Crear dades a `matematiques.ts`
+5. Crear dades a `matematiques.ts`, `catala.ts` o `castellano.ts`
 
 Veure [EXERCISES.md](./EXERCISES.md) per una guia detallada.
 
@@ -224,22 +274,18 @@ Per inspeccionar estat de components i Zustand store.
 ## 🔮 Pròximes Funcionalitats
 
 ### Curt Termini
-- [ ] Més tipus d'exercicis (magic-square, number-search, number-line, estimation)
+- [ ] Assignatura d'Anglès
 - [ ] Més exercicis per als conjunts existents
 - [ ] Millores d'animacions i feedback
 
 ### Mig Termini
-- [ ] Assignatura de Català
-- [ ] Assignatura de Castellà
-- [ ] Assignatura d'Anglès
-- [ ] Sistema de recompenses/gamificació
-- [ ] Estadístiques de progrés
-
-### Llarg Termini
 - [ ] Mode multijugador local
 - [ ] Exportació de progressos per a pares/professors
+
+### Llarg Termini
 - [ ] Més nivells educatius
 - [ ] Modes de dificultat
+- [ ] Sincronització entre dispositius
 
 ## 📄 Llicència
 
@@ -255,5 +301,5 @@ Per inspeccionar estat de components i Zustand store.
 
 ---
 
-**Documentació generada**: Novembre 2025
-**Versió**: 1.0.0
+**Documentació actualitzada**: Gener 2026
+**Versió**: 2.0.0

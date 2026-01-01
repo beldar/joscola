@@ -1172,7 +1172,6 @@ export const matematiquesExerciseSets: ExerciseSet[] = [
           { row: 0, col: 1, value: 5 },
           { row: 0, col: 2, value: 3 },
           { row: 1, col: 0, value: 4 },
-          { row: 1, col: 1, value: 4 },
           { row: 1, col: 2, value: 6 },
           { row: 2, col: 0, value: 4 },
           { row: 2, col: 2, value: 5 },

@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.1.11 - fix: security vuln
+// Version 1.1.12 - fix: word search touch events
 
-const CACHE_NAME = 'joscola-v1.1.11';
-const RUNTIME_CACHE = 'joscola-runtime-v1.1.11';
+const CACHE_NAME = 'joscola-v1.1.12';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.12';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

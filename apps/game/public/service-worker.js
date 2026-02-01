@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.1.12 - fix: word search touch events
+// Version 1.1.13 - fix: update docs
 
-const CACHE_NAME = 'joscola-v1.1.12';
-const RUNTIME_CACHE = 'joscola-runtime-v1.1.12';
+const CACHE_NAME = 'joscola-v1.1.13';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.13';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

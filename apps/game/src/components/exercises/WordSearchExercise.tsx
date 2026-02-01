@@ -22,17 +22,36 @@ export function WordSearchExercise({ exercise, onAnswer, answers }: Props) {
   const [foundCells, setFoundCells] = useState<Set<string>>(new Set());
   const gridRef = useRef<HTMLDivElement>(null);
   const cellRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const prevExerciseIdRef = useRef<string | null>(null);
+  const prevAnswersRef = useRef<string | undefined>(undefined);
 
-  // Load found words from answers on mount
+  // Sync foundWords state from answers prop
+  // This runs when exercise changes or when answers are cleared (retry)
   useEffect(() => {
     const savedFoundWords = answers.get("foundWords");
+    const exerciseChanged = prevExerciseIdRef.current !== exercise.id;
+    const answersChanged = prevAnswersRef.current !== savedFoundWords;
+
+    // Update refs
+    prevExerciseIdRef.current = exercise.id;
+    prevAnswersRef.current = savedFoundWords;
+
+    // Only process if exercise changed or answers changed
+    if (!exerciseChanged && !answersChanged) {
+      return;
+    }
+
     if (savedFoundWords) {
       const words = savedFoundWords.split(",").filter(w => w.length > 0);
-      setFoundWords(new Set(words));
+      // Only include words that are actually part of this exercise
+      const validWords = words.filter(word =>
+        exercise.words.some(w => w.toUpperCase() === word.toUpperCase())
+      );
+      setFoundWords(new Set(validWords));
 
       // Reconstruct found cells from word positions
       const cells = new Set<string>();
-      words.forEach(word => {
+      validWords.forEach(word => {
         const wordPos = exercise.wordPositions.find(wp => wp.word.toUpperCase() === word.toUpperCase());
         if (wordPos) {
           const wordCells = getWordCells(wordPos);
@@ -40,8 +59,19 @@ export function WordSearchExercise({ exercise, onAnswer, answers }: Props) {
         }
       });
       setFoundCells(cells);
+
+      // Auto-fix corrupted localStorage if invalid words were filtered out
+      if (validWords.length !== words.length) {
+        const newAnswers = new Map(answers);
+        newAnswers.set("foundWords", validWords.join(","));
+        onAnswer(newAnswers);
+      }
+    } else {
+      // Reset state when no saved words (new exercise or cleared)
+      setFoundWords(new Set());
+      setFoundCells(new Set());
     }
-  }, [answers, exercise.wordPositions]);
+  }, [exercise.id, exercise.words, exercise.wordPositions, answers]);
 
   const getWordCells = (wordPos: typeof exercise.wordPositions[0]): CellPosition[] => {
     const cells: CellPosition[] = [];

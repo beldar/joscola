@@ -74,9 +74,13 @@ export function AdditionJumpsExercise({ exercise, onAnswer, answers }: Props) {
             {exercise.add}
           </div>
           <div className="text-4xl font-bold text-gray-700">=</div>
-          <div className="w-32 h-16 border-b-4 border-dashed border-cyan-500 flex items-center justify-center text-4xl font-bold text-gray-400">
-
-          </div>
+          <input
+            type="number"
+            value={answers.get("result") ?? ""}
+            onChange={(e) => handleInputChange("result", e.target.value)}
+            className="w-20 h-20 border-4 border-dashed border-cyan-500 rounded-xl text-4xl font-bold text-center text-gray-700 bg-white focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-100"
+            placeholder=""
+          />
         </motion.div>
 
         {/* Right: House diagram and Billy */}
@@ -317,25 +321,19 @@ export function AdditionJumpsExercise({ exercise, onAnswer, answers }: Props) {
               10
             </motion.div>
 
-            {/* End number box - input - aligned with end position */}
+            {/* End number box - display only - aligned with end position */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="absolute w-20 h-20 flex items-center justify-center border-4 border-dashed border-orange-400 rounded-xl"
+              className="absolute w-20 h-20 flex items-center justify-center border-4 border-dashed border-orange-400 rounded-xl text-3xl font-bold text-gray-700"
               style={{
                 left: `${trainStartX + (result - 1) * ballWidth + 16 - 40}px`,
                 backgroundColor: 'white',
                 top: '8px'
               }}
             >
-              <input
-                type="number"
-                value={answers.get("result") ?? ""}
-                onChange={(e) => handleInputChange("result", e.target.value)}
-                className="w-full h-full text-3xl font-bold text-center bg-transparent focus:outline-none"
-                placeholder=""
-              />
+              {answers.get("result") ?? ""}
             </motion.div>
           </div>
         </div>

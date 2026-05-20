@@ -184,9 +184,7 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
 
       case "addition-jumps": {
         const correctResult = exercise.start + exercise.add;
-        const toTen = 10 - exercise.start;
-        // Validate both: the house diagram (toTen) and the final result
-        return answers.get("step-1") === toTen && answers.get("result") === correctResult;
+        return answers.get("result") === correctResult;
       }
 
       case "counting": {

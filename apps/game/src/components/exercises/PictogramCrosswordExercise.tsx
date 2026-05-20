@@ -350,7 +350,6 @@ export function PictogramCrosswordExercise({ exercise, onAnswer, answers }: Prop
                         bg-transparent outline-none
                         ${value ? "text-gray-800" : "text-gray-400"}
                       `}
-                      maxLength={1}
                       autoComplete="off"
                       autoCapitalize="characters"
                     />

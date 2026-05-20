@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.1.14 - fix: word search word count bug
+// Version 1.1.15 - fix: jump addition
 
-const CACHE_NAME = 'joscola-v1.1.14';
-const RUNTIME_CACHE = 'joscola-runtime-v1.1.14';
+const CACHE_NAME = 'joscola-v1.1.15';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.15';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

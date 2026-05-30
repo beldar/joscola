@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.1.16 - fix: crucigrama
+// Version 1.1.17 - feat: add rubiks cube exercices
 
-const CACHE_NAME = 'joscola-v1.1.16';
-const RUNTIME_CACHE = 'joscola-runtime-v1.1.16';
+const CACHE_NAME = 'joscola-v1.1.17';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.17';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

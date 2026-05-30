@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import type {
   RubikSolverNode,
@@ -14,6 +15,11 @@ interface Props {
   onAnswer: (answers: Map<string, string | number>) => void;
 }
 
+interface ZoomImage {
+  src: string;
+  alt: string;
+}
+
 const readHistory = (answers: Map<string, string | number>, startNodeId: string) => {
   const raw = answers.get("path");
   if (typeof raw !== "string" || raw.length === 0) return [startNodeId];
@@ -21,6 +27,7 @@ const readHistory = (answers: Map<string, string | number>, startNodeId: string)
 };
 
 export function RubikSolverPathExercise({ exercise, answers, onAnswer }: Props) {
+  const [zoomImage, setZoomImage] = useState<ZoomImage | null>(null);
   const nodesById = new Map(exercise.nodes.map((node) => [node.id, node]));
   const currentNodeId = (answers.get("node") as string | undefined) ?? exercise.startNodeId;
   const currentNode = nodesById.get(currentNodeId) ?? nodesById.get(exercise.startNodeId);
@@ -65,19 +72,34 @@ export function RubikSolverPathExercise({ exercise, answers, onAnswer }: Props) 
     onAnswer(nextAnswers);
   };
 
+  const isAlgorithmStep = currentNode.id.includes("algorithm");
+
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
       <div className="flex flex-col gap-4 rounded-2xl border-4 border-slate-900 bg-slate-950 p-4 text-white shadow-xl md:flex-row md:items-center">
         {currentNode.image && (
-          <div className="relative flex min-h-48 items-center justify-center rounded-xl bg-white p-3 md:w-1/3">
+          <button
+            type="button"
+            onClick={() => setZoomImage({
+              src: currentNode.image!,
+              alt: currentNode.imageAlt ?? currentNode.title,
+            })}
+            className={`group relative flex min-h-48 items-center justify-center rounded-xl bg-white p-3 transition focus:outline-none focus:ring-4 focus:ring-yellow-300 ${
+              isAlgorithmStep ? "md:min-h-80 md:w-1/2" : "md:w-1/3"
+            }`}
+            aria-label="Ampliar imatge"
+          >
             <Image
               src={currentNode.image}
               alt={currentNode.imageAlt ?? currentNode.title}
               fill
-              sizes="(min-width: 768px) 33vw, 90vw"
+              sizes={isAlgorithmStep ? "(min-width: 768px) 50vw, 90vw" : "(min-width: 768px) 33vw, 90vw"}
               className="object-contain p-3"
             />
-          </div>
+            <span className="absolute bottom-2 right-2 rounded-lg bg-slate-950/85 px-3 py-2 text-sm font-black uppercase text-white opacity-95 shadow-md transition group-hover:bg-yellow-300 group-hover:text-slate-950">
+              Ampliar
+            </span>
+          </button>
         )}
 
         <div className="flex flex-1 flex-col gap-3">
@@ -160,6 +182,47 @@ export function RubikSolverPathExercise({ exercise, answers, onAnswer }: Props) 
           Començar de nou
         </button>
       </div>
+
+      <AnimatePresence>
+        {zoomImage && (
+          <motion.div
+            className="fixed inset-0 z-[80] flex flex-col bg-slate-950/95 p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Imatge ampliada"
+            onClick={() => setZoomImage(null)}
+          >
+            <div className="mb-3 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setZoomImage(null)}
+                className="rounded-xl bg-white px-5 py-3 text-lg font-black uppercase text-slate-950 shadow-lg"
+              >
+                Tancar
+              </button>
+            </div>
+            <motion.div
+              className="relative min-h-0 flex-1 rounded-2xl bg-white"
+              initial={{ scale: 0.96 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.96 }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <Image
+                src={zoomImage.src}
+                alt={zoomImage.alt}
+                fill
+                sizes="100vw"
+                className="object-contain p-4"
+                priority
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

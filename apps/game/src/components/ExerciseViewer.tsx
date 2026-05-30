@@ -6,6 +6,7 @@ import { Button } from "@joscola/ui";
 import { matematiquesExerciseSets } from "@/lib/exercises/matematiques";
 import { catalaExerciseSets } from "@/lib/exercises/catala";
 import { castellanoExerciseSets } from "@/lib/exercises/castellano";
+import { rubikExerciseSets } from "@/lib/exercises/rubik";
 import { useGameStore, EXERCISE_ANSWER_PREFIX, EXERCISE_CORRECTIONS_PREFIX } from "@/lib/store";
 import { GameHeader } from "./GameHeader";
 import { MedalAnimation } from "./MedalAnimation";
@@ -26,6 +27,10 @@ import { ReadingSpeedExercise } from "./exercises/ReadingSpeedExercise";
 import { CalligraphyExercise } from "./exercises/CalligraphyExercise";
 import { WordSearchExercise } from "./exercises/WordSearchExercise";
 import { PictogramCrosswordExercise } from "./exercises/PictogramCrosswordExercise";
+import { RubikInfoExercise } from "./exercises/RubikInfoExercise";
+import { RubikLetterQuizExercise } from "./exercises/RubikLetterQuizExercise";
+import { RubikMatchExercise } from "./exercises/RubikMatchExercise";
+import { RubikSequenceTapExercise } from "./exercises/RubikSequenceTapExercise";
 import type { Exercise } from "@/lib/exercises/types";
 
 interface Props {
@@ -91,7 +96,9 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
     ? catalaExerciseSets
     : subject === "castella"
       ? castellanoExerciseSets
-      : matematiquesExerciseSets;
+      : subject === "rubik"
+        ? rubikExerciseSets
+        : matematiquesExerciseSets;
   const exerciseSet = exerciseSets.find((s) => s.id === setId);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, number | string>>(new Map());
@@ -469,6 +476,23 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
         });
       }
 
+      case "rubik-info":
+        return answers.get("done") === 1;
+
+      case "rubik-letter-quiz":
+        return answers.get("answer") === exercise.move;
+
+      case "rubik-match":
+        return exercise.pairs.every((move) => answers.get(`match-${move}`) === move);
+
+      case "rubik-sequence-tap": {
+        const tapsRaw = answers.get("taps") as string | undefined;
+        if (!tapsRaw) return false;
+        const taps = tapsRaw.split(",").filter(Boolean);
+        if (taps.length !== exercise.sequence.length) return false;
+        return exercise.sequence.every((move, i) => taps[i] === move);
+      }
+
       default:
         return false;
     }
@@ -588,6 +612,7 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
   const canCorrect = answers.size > 0;
   const isReadingSpeed = currentExercise.type === "reading-speed";
   const isCalligraphy = currentExercise.type === "calligraphy";
+  const isRubikInfo = currentExercise.type === "rubik-info";
 
   const renderExercise = () => {
     switch (currentExercise.type) {
@@ -812,6 +837,42 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
           />
         );
 
+      case "rubik-info":
+        return (
+          <RubikInfoExercise
+            exercise={currentExercise}
+            answers={answers as Map<string, string | number>}
+            onAnswer={setAnswers}
+          />
+        );
+
+      case "rubik-letter-quiz":
+        return (
+          <RubikLetterQuizExercise
+            exercise={currentExercise}
+            answers={answers as Map<string, string | number>}
+            onAnswer={setAnswers}
+          />
+        );
+
+      case "rubik-match":
+        return (
+          <RubikMatchExercise
+            exercise={currentExercise}
+            answers={answers as Map<string, string | number>}
+            onAnswer={setAnswers}
+          />
+        );
+
+      case "rubik-sequence-tap":
+        return (
+          <RubikSequenceTapExercise
+            exercise={currentExercise}
+            answers={answers as Map<string, string | number>}
+            onAnswer={setAnswers}
+          />
+        );
+
       default:
         return <div>Exercise type not implemented yet</div>;
     }
@@ -938,6 +999,47 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
                 className="text-2xl px-12 py-6 uppercase"
               >
                 TORNAR A INTENTAR 🔄
+              </Button>
+            ) : isRubikInfo ? (
+              <Button
+                variant="success"
+                size="lg"
+                onClick={() => {
+                  const next = new Map(answers);
+                  next.set("done", 1);
+                  setAnswers(next);
+                  // Trigger correction inline so the star/medal flow runs
+                  const newCorrections = new Map(corrections);
+                  newCorrections.set(currentExercise.id, true);
+                  setCorrections(newCorrections);
+                  saveAnswersToStorage(currentExercise.id, next);
+                  saveCorrectionsToStorage(setId, newCorrections);
+                  setShowCorrection(true);
+                  playSuccessSound();
+                  const progress = getExerciseProgress(setId, currentExercise.id);
+                  if (!progress || !progress.completed) {
+                    markExerciseComplete(setId, currentExercise.id);
+                    setJustEarnedStar(true);
+                    setTimeout(() => { addStars(1); playStarSound(); }, 500);
+                  }
+                  const isLastExercise = currentIndex === exerciseSet.exercises.length - 1;
+                  let shouldShowMedal = false;
+                  if (isLastExercise && isExerciseSetComplete(setId)) {
+                    const medals = getMedalsForSet(setId);
+                    if (medals.length === 0) { awardMedal(setId, exerciseSet.title); shouldShowMedal = true; }
+                  }
+                  setTimeout(() => {
+                    setShowCorrection(false);
+                    setJustEarnedStar(false);
+                    if (isLastExercise) {
+                      if (shouldShowMedal) { setPendingSetNavigation(true); setShowMedal(true); playMedalSound(); }
+                      else { onBack(); }
+                    } else { setTimeout(() => { handleNext(); }, 300); }
+                  }, 2500);
+                }}
+                className="text-2xl px-12 py-6 uppercase"
+              >
+                ENTÈS! ✓
               </Button>
             ) : !isReadingSpeed && !isCalligraphy ? (
               <Button

@@ -31,6 +31,12 @@ const subjects = [
     color: "from-purple-400 to-purple-600",
     disabled: true,
   },
+  {
+    id: "rubik",
+    name: "RUBIK",
+    icon: "🧩",
+    color: "from-red-400 to-orange-600",
+  },
 ];
 
 export function SubjectSelector() {

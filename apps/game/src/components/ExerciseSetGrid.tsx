@@ -5,6 +5,7 @@ import { Card } from "@joscola/ui";
 import { matematiquesExerciseSets } from "@/lib/exercises/matematiques";
 import { catalaExerciseSets } from "@/lib/exercises/catala";
 import { castellanoExerciseSets } from "@/lib/exercises/castellano";
+import { rubikExerciseSets } from "@/lib/exercises/rubik";
 import { useGameStore } from "@/lib/store";
 import { useState } from "react";
 import { ExerciseViewer } from "./ExerciseViewer";
@@ -24,7 +25,9 @@ export function ExerciseSetGrid({ subject = "matematiques" }: Props) {
     ? catalaExerciseSets
     : subject === "castella"
       ? castellanoExerciseSets
-      : matematiquesExerciseSets;
+      : subject === "rubik"
+        ? rubikExerciseSets
+        : matematiquesExerciseSets;
 
   const isSetComplete = (setId: string) => {
     const set = exerciseSets.find((s) => s.id === setId);
@@ -65,7 +68,7 @@ export function ExerciseSetGrid({ subject = "matematiques" }: Props) {
             className="text-center mb-12"
           >
             <h1 className="text-5xl font-bold text-gray-800 mb-4 uppercase">
-              {subject === "catala" ? "CATALÀ" : subject === "castella" ? "CASTELLANO" : "MATEMÀTIQUES"}
+              {subject === "catala" ? "CATALÀ" : subject === "castella" ? "CASTELLANO" : subject === "rubik" ? "RUBIK 🧩" : "MATEMÀTIQUES"}
             </h1>
             <p className="text-2xl text-gray-600 uppercase">
               ESCULL UN GRUP D&apos;EXERCICIS

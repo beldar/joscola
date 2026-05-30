@@ -137,12 +137,14 @@ export const useGameStore = create<GameStore>()(
         const { matematiquesExerciseSets } = require('./exercises/matematiques');
         const { catalaExerciseSets } = require('./exercises/catala');
         const { castellanoExerciseSets } = require('./exercises/castellano');
+        const { rubikExerciseSets } = require('./exercises/rubik');
 
         // Combine all exercise sets
         const allExerciseSets = [
           ...matematiquesExerciseSets,
           ...catalaExerciseSets,
-          ...castellanoExerciseSets
+          ...castellanoExerciseSets,
+          ...rubikExerciseSets,
         ];
 
         const exerciseSet = allExerciseSets.find((set: any) => set.id === exerciseSetId);

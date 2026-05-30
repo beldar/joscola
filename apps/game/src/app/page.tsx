@@ -72,7 +72,8 @@ export default function Home() {
       {user && currentSubject === "matematiques" && <ExerciseSetGrid subject="matematiques" />}
       {user && currentSubject === "catala" && <ExerciseSetGrid subject="catala" />}
       {user && currentSubject === "castella" && <ExerciseSetGrid subject="castella" />}
-      {user && currentSubject && currentSubject !== "matematiques" && currentSubject !== "catala" && currentSubject !== "castella" && (
+      {user && currentSubject === "rubik" && <ExerciseSetGrid subject="rubik" />}
+      {user && currentSubject && !["matematiques", "catala", "castella", "rubik"].includes(currentSubject) && (
         <div>Subject not implemented yet</div>
       )}
       <InstallPrompt />

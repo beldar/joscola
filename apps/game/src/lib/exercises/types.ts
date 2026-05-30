@@ -15,7 +15,14 @@ export type ExerciseType =
   | "reading-speed"
   | "calligraphy"
   | "word-search"
-  | "pictogram-crossword";
+  | "pictogram-crossword"
+  | "rubik-info"
+  | "rubik-letter-quiz"
+  | "rubik-match"
+  | "rubik-sequence-tap";
+
+export type RubikMove =
+  | "R" | "R'" | "L" | "L'" | "U" | "U'" | "D" | "D'" | "F" | "F'" | "B" | "B'";
 
 export interface BaseExercise {
   id: string;
@@ -172,6 +179,28 @@ export interface PictogramCrosswordExercise extends BaseExercise {
   grid: (string | null)[][]; // null for blocked cells, empty string for fillable cells
 }
 
+export interface RubikInfoExercise extends BaseExercise {
+  type: "rubik-info";
+  blocks: Array<{ move?: RubikMove; text: string }>;
+}
+
+export interface RubikLetterQuizExercise extends BaseExercise {
+  type: "rubik-letter-quiz";
+  move: RubikMove;
+  options: RubikMove[];
+}
+
+export interface RubikMatchExercise extends BaseExercise {
+  type: "rubik-match";
+  pairs: RubikMove[];
+}
+
+export interface RubikSequenceTapExercise extends BaseExercise {
+  type: "rubik-sequence-tap";
+  sequence: RubikMove[];
+  buttons: RubikMove[];
+}
+
 export type Exercise =
   | NumberSequenceExercise
   | CountingExercise
@@ -189,7 +218,11 @@ export type Exercise =
   | ReadingSpeedExercise
   | CalligraphyExercise
   | WordSearchExercise
-  | PictogramCrosswordExercise;
+  | PictogramCrosswordExercise
+  | RubikInfoExercise
+  | RubikLetterQuizExercise
+  | RubikMatchExercise
+  | RubikSequenceTapExercise;
 
 export interface ExerciseSet {
   id: string;

@@ -1,4 +1,13 @@
-import type { ExerciseSet, RubikInfoExercise, RubikLetterQuizExercise, RubikMatchExercise, RubikSequenceTapExercise } from "./types";
+import type {
+  ExerciseSet,
+  RubikInfoExercise,
+  RubikLetterQuizExercise,
+  RubikMatchExercise,
+  RubikSequenceTapExercise,
+  RubikSolverPathExercise,
+} from "./types";
+
+const guideAsset = (name: string) => `/rubik-2x2-guide/${name}.png`;
 
 export const rubikExerciseSets: ExerciseSet[] = [
   // ─── GROUP 1: APRÈN LES LLETRES ───────────────────────────────────────────
@@ -334,6 +343,214 @@ export const rubikExerciseSets: ExerciseSet[] = [
         sequence: ["R", "U", "R'", "U'"],
         buttons: ["R", "R'", "U", "U'", "F", "D"],
       } as RubikSequenceTapExercise,
+    ],
+  },
+
+  // ─── GROUP 4: SOLUCIONADOR 2x2 ───────────────────────────────────────────
+  {
+    id: "rubik-solucionador-2x2",
+    title: "SOLUCIONADOR 2x2",
+    icon: "🧭",
+    exercises: [
+      {
+        id: "rubik-mini-solver",
+        type: "rubik-solver-path",
+        title: "CAMÍ DEL MINI",
+        instructions: "MIRA EL TEU CUB, TOCA EL DIBUIX I SEGUEIX EL CAMÍ",
+        startNodeId: "c2",
+        nodes: [
+          {
+            id: "c2",
+            phase: "CAPA BLANCA",
+            title: "2A CANTONADA",
+            text: "Busca la peça blanc-blau-taronja.",
+            image: guideAsset("preparacio-canto-2"),
+            imageAlt: "Cub amb el logo blanc a dalt, vermell davant i blau a la dreta.",
+            options: [
+              {
+                label: "Ja és al seu lloc",
+                hint: "Passa a la tercera cantonada.",
+                image: guideAsset("c2-ja-posat"),
+                nextNodeId: "c3",
+              },
+              {
+                label: "És a dalt",
+                hint: "Primer la baixarem.",
+                image: guideAsset("c2-a-dalt"),
+                nextNodeId: "c2-top",
+              },
+              {
+                label: "És a baix",
+                hint: "Ara la posarem bé.",
+                image: guideAsset("c2-a-baix"),
+                nextNodeId: "c2-bottom",
+              },
+            ],
+          },
+          {
+            id: "c2-top",
+            phase: "CAPA BLANCA",
+            title: "BAIXA LA PEÇA",
+            text: "Posa el cub com el dibuix i fes els moviments.",
+            image: guideAsset("c2-baixar-de-dalt"),
+            imageAlt: "Tres casos per baixar la cantonada blanc-blau-taronja amb R', D' i R.",
+            options: [{ label: "Ja és a baix", nextNodeId: "c2-bottom" }],
+          },
+          {
+            id: "c2-bottom",
+            phase: "CAPA BLANCA",
+            title: "TRIA EL CAS",
+            text: "Gira D fins que el teu cub sigui com un dibuix.",
+            options: [
+              { label: "Cas 1", image: guideAsset("c2-cas-1"), nextNodeId: "c3" },
+              { label: "Cas 2", image: guideAsset("c2-cas-2"), nextNodeId: "c3" },
+              { label: "Cas 3", image: guideAsset("c2-cas-3"), nextNodeId: "c3" },
+            ],
+          },
+          {
+            id: "c3",
+            phase: "CAPA BLANCA",
+            title: "3A CANTONADA",
+            text: "Busca la peça blanc-verd-taronja.",
+            image: guideAsset("preparacio-canto-3"),
+            imageAlt: "Cub preparat per trobar la tercera cantonada.",
+            options: [
+              { label: "Ja és al seu lloc", image: guideAsset("c3-ja-posat"), nextNodeId: "c4" },
+              { label: "És a dalt", image: guideAsset("c3-a-dalt"), nextNodeId: "c3-top" },
+              { label: "És a baix", image: guideAsset("c3-a-baix"), nextNodeId: "c3-bottom" },
+            ],
+          },
+          {
+            id: "c3-top",
+            phase: "CAPA BLANCA",
+            title: "SI ÉS A DALT",
+            text: "Toca el dibuix que s'assembla més al teu cub.",
+            options: [
+              { label: "Cas 1", hint: "Després ja vas a la quarta cantonada.", image: guideAsset("c3-dalt-cas-1"), nextNodeId: "c4" },
+              { label: "Cas 2 o 3", image: guideAsset("c3-dalt-cas-2-3"), nextNodeId: "c3-bottom" },
+              { label: "Cas 4 o 5", image: guideAsset("c3-dalt-cas-4-5"), nextNodeId: "c3-bottom" },
+            ],
+          },
+          {
+            id: "c3-bottom",
+            phase: "CAPA BLANCA",
+            title: "SI ÉS A BAIX",
+            text: "Gira D fins que coincideixi i fes el dibuix.",
+            options: [
+              { label: "Cas 1", image: guideAsset("c3-baix-cas-1"), nextNodeId: "c4" },
+              { label: "Cas 2", image: guideAsset("c3-baix-cas-2"), nextNodeId: "c4" },
+              { label: "Cas 3", image: guideAsset("c3-baix-cas-3"), nextNodeId: "c4" },
+            ],
+          },
+          {
+            id: "c4",
+            phase: "CAPA BLANCA",
+            title: "4A CANTONADA",
+            text: "Busca la peça blanc-verd-vermell.",
+            image: guideAsset("preparacio-canto-4"),
+            imageAlt: "Cub preparat per trobar la quarta cantonada.",
+            options: [
+              { label: "Ja és al seu lloc", image: guideAsset("c4-ja-posat"), nextNodeId: "yellow" },
+              { label: "És a dalt", image: guideAsset("c4-a-dalt"), nextNodeId: "c4-top" },
+              { label: "És a baix", image: guideAsset("c4-a-baix"), nextNodeId: "c4-bottom" },
+            ],
+          },
+          {
+            id: "c4-top",
+            phase: "CAPA BLANCA",
+            title: "BAIXA-LA",
+            text: "Fes el dibuix. Després mira-la a baix.",
+            image: guideAsset("c4-baixar-de-dalt"),
+            imageAlt: "Moviments per baixar la quarta cantonada.",
+            options: [{ label: "Ja és a baix", nextNodeId: "c4-bottom" }],
+          },
+          {
+            id: "c4-bottom",
+            phase: "CAPA BLANCA",
+            title: "ÚLTIM CAS BLANC",
+            text: "Gira D fins que coincideixi.",
+            options: [
+              { label: "Cas 1", hint: "Després aniràs al cas 2.", image: guideAsset("c4-baix-cas-1"), nextNodeId: "c4-bottom-case-2" },
+              { label: "Cas 2", image: guideAsset("c4-baix-cas-2"), nextNodeId: "yellow" },
+              { label: "Cas 3", image: guideAsset("c4-baix-cas-3"), nextNodeId: "yellow" },
+            ],
+          },
+          {
+            id: "c4-bottom-case-2",
+            phase: "CAPA BLANCA",
+            title: "ARA EL CAS 2",
+            text: "Fes aquest dibuix per acabar la capa blanca.",
+            image: guideAsset("c4-baix-cas-2"),
+            imageAlt: "Cas 2 de la quarta cantonada.",
+            options: [{ label: "Capa blanca feta", nextNodeId: "yellow" }],
+          },
+          {
+            id: "yellow",
+            phase: "CARA GROGA",
+            title: "QUANTS GROCS HI HA A DALT?",
+            text: "Mira només la cara de dalt.",
+            image: guideAsset("preparacio-groc"),
+            imageAlt: "Cub amb la cara blanca a baix.",
+            options: [
+              { label: "1 groc", image: guideAsset("groc-1"), nextNodeId: "yellow-algorithm" },
+              { label: "0 grocs", image: guideAsset("groc-0"), nextNodeId: "yellow-algorithm" },
+              { label: "2 grocs", image: guideAsset("groc-2"), nextNodeId: "yellow-algorithm" },
+            ],
+          },
+          {
+            id: "yellow-algorithm",
+            phase: "CARA GROGA",
+            title: "FES L'ALGORITME",
+            text: "Fes els moviments. Potser cal repetir-ho.",
+            image: guideAsset("algoritme-cara-groga"),
+            imageAlt: "Algoritme R U R' U R U2 R' per fer la cara groga.",
+            options: [
+              { label: "Encara no és tota groga", nextNodeId: "yellow" },
+              { label: "Ja és tota groga", nextNodeId: "place-corners" },
+            ],
+          },
+          {
+            id: "place-corners",
+            phase: "ÚLTIM PAS",
+            title: "COL·LOCA LES GROGUES",
+            text: "Gira U fins que dues cantonades casin amb baix.",
+            image: guideAsset("gira-capa-u"),
+            imageAlt: "Gir U de la capa de dalt.",
+            options: [
+              { label: "Ja està resolt", image: guideAsset("mini-resolt-model"), nextNodeId: "done", complete: true },
+              { label: "Encara no", nextNodeId: "swap-corners" },
+            ],
+          },
+          {
+            id: "swap-corners",
+            phase: "ÚLTIM PAS",
+            title: "QUINES CANVIEN?",
+            text: "Toca el dibuix que s'assembla al teu cub.",
+            options: [
+              { label: "Costat amb costat", image: guideAsset("canvi-adjacent"), nextNodeId: "swap-algorithm" },
+              { label: "En diagonal", image: guideAsset("canvi-diagonal"), nextNodeId: "swap-algorithm" },
+            ],
+          },
+          {
+            id: "swap-algorithm",
+            phase: "ÚLTIM PAS",
+            title: "CANVIA LES CANTONADES",
+            text: "Fes l'algoritme i torna a mirar.",
+            image: guideAsset("algoritme-canviar-cantonades"),
+            imageAlt: "Algoritme per intercanviar cantonades grogues.",
+            options: [{ label: "Tornar a mirar", nextNodeId: "place-corners" }],
+          },
+          {
+            id: "done",
+            phase: "FET!",
+            title: "CUB RESOLT",
+            text: "Has arribat al final.",
+            image: guideAsset("felicitats"),
+            imageAlt: "Pàgina de felicitació del PDF.",
+            complete: true,
+          },
+        ],
+      } as RubikSolverPathExercise,
     ],
   },
 ];

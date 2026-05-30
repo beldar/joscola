@@ -19,7 +19,8 @@ export type ExerciseType =
   | "rubik-info"
   | "rubik-letter-quiz"
   | "rubik-match"
-  | "rubik-sequence-tap";
+  | "rubik-sequence-tap"
+  | "rubik-solver-path";
 
 export type RubikMove =
   | "R" | "R'" | "L" | "L'" | "U" | "U'" | "D" | "D'" | "F" | "F'" | "B" | "B'";
@@ -201,6 +202,32 @@ export interface RubikSequenceTapExercise extends BaseExercise {
   buttons: RubikMove[];
 }
 
+export interface RubikSolverPathExercise extends BaseExercise {
+  type: "rubik-solver-path";
+  startNodeId: string;
+  nodes: RubikSolverNode[];
+}
+
+export interface RubikSolverNode {
+  id: string;
+  phase: string;
+  title: string;
+  text?: string;
+  image?: string;
+  imageAlt?: string;
+  complete?: boolean;
+  options?: RubikSolverOption[];
+}
+
+export interface RubikSolverOption {
+  label: string;
+  nextNodeId: string;
+  image?: string;
+  imageAlt?: string;
+  hint?: string;
+  complete?: boolean;
+}
+
 export type Exercise =
   | NumberSequenceExercise
   | CountingExercise
@@ -222,7 +249,8 @@ export type Exercise =
   | RubikInfoExercise
   | RubikLetterQuizExercise
   | RubikMatchExercise
-  | RubikSequenceTapExercise;
+  | RubikSequenceTapExercise
+  | RubikSolverPathExercise;
 
 export interface ExerciseSet {
   id: string;

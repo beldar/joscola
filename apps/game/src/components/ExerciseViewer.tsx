@@ -31,6 +31,7 @@ import { RubikInfoExercise } from "./exercises/RubikInfoExercise";
 import { RubikLetterQuizExercise } from "./exercises/RubikLetterQuizExercise";
 import { RubikMatchExercise } from "./exercises/RubikMatchExercise";
 import { RubikSequenceTapExercise } from "./exercises/RubikSequenceTapExercise";
+import { RubikSolverPathExercise } from "./exercises/RubikSolverPathExercise";
 import type { Exercise } from "@/lib/exercises/types";
 
 interface Props {
@@ -493,6 +494,9 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
         return exercise.sequence.every((move, i) => taps[i] === move);
       }
 
+      case "rubik-solver-path":
+        return answers.get("solved") === 1;
+
       default:
         return false;
     }
@@ -609,10 +613,11 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
   };
 
   const isCorrect = corrections.get(currentExercise.id) === true;
-  const canCorrect = answers.size > 0;
   const isReadingSpeed = currentExercise.type === "reading-speed";
   const isCalligraphy = currentExercise.type === "calligraphy";
   const isRubikInfo = currentExercise.type === "rubik-info";
+  const isRubikSolverPath = currentExercise.type === "rubik-solver-path";
+  const canCorrect = isRubikSolverPath ? answers.get("solved") === 1 : answers.size > 0;
 
   const renderExercise = () => {
     switch (currentExercise.type) {
@@ -873,6 +878,15 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
           />
         );
 
+      case "rubik-solver-path":
+        return (
+          <RubikSolverPathExercise
+            exercise={currentExercise}
+            answers={answers as Map<string, string | number>}
+            onAnswer={setAnswers}
+          />
+        );
+
       default:
         return <div>Exercise type not implemented yet</div>;
     }
@@ -1049,7 +1063,7 @@ export function ExerciseViewer({ setId, subject = "matematiques", onBack, onProf
                 disabled={!canCorrect}
                 className="text-2xl px-12 py-6 uppercase"
               >
-                CORREGIR ✓
+                {isRubikSolverPath ? "ACABAR ✓" : "CORREGIR ✓"}
               </Button>
             ) : isCalligraphy && canCorrect ? (
               <Button

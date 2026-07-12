@@ -1,8 +1,8 @@
 // Service Worker for Joscola PWA
-// Version 1.1.19 - feat: add rubik solver
+// Version 1.1.20 - Improve Rubik solver image zoom
 
-const CACHE_NAME = 'joscola-v1.1.19';
-const RUNTIME_CACHE = 'joscola-runtime-v1.1.19';
+const CACHE_NAME = 'joscola-v1.1.20';
+const RUNTIME_CACHE = 'joscola-runtime-v1.1.20';
 
 // Assets to cache on install
 const PRECACHE_URLS = [

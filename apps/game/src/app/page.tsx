@@ -3,6 +3,7 @@
 import { Onboarding } from "@/components/Onboarding";
 import { SubjectSelector } from "@/components/SubjectSelector";
 import { ExerciseSetGrid } from "@/components/ExerciseSetGrid";
+import { AnimalKeyboard } from "@/components/AnimalKeyboard";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { UpdateNotification } from "@/components/UpdateNotification";
 import { SplashScreen } from "@/components/SplashScreen";
@@ -73,7 +74,8 @@ export default function Home() {
       {user && currentSubject === "catala" && <ExerciseSetGrid subject="catala" />}
       {user && currentSubject === "castella" && <ExerciseSetGrid subject="castella" />}
       {user && currentSubject === "rubik" && <ExerciseSetGrid subject="rubik" />}
-      {user && currentSubject && !["matematiques", "catala", "castella", "rubik"].includes(currentSubject) && (
+      {user && currentSubject === "animals" && <AnimalKeyboard />}
+      {user && currentSubject && !["matematiques", "catala", "castella", "rubik", "animals"].includes(currentSubject) && (
         <div>Subject not implemented yet</div>
       )}
       <InstallPrompt />

@@ -37,6 +37,12 @@ const subjects = [
     icon: "🧩",
     color: "from-red-400 to-orange-600",
   },
+  {
+    id: "animals",
+    name: "ANIMALS",
+    icon: "🐾",
+    color: "from-teal-400 to-emerald-600",
+  },
 ];
 
 export function SubjectSelector() {
